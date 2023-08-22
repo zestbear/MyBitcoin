@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Main Page</title>
+    <script src="https://unpkg.com/lightweight-charts/dist/lightweight-charts.standalone.production.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -36,7 +38,7 @@
             padding: 40px;
         }
         .stock-placeholder {
-            width: 90%;
+            width: 40%;
             max-width: 450px;
             height: 300px;
             margin-bottom: 20px;
@@ -45,8 +47,11 @@
             border-radius: 5px;
             display: inline-block;
             vertical-align: top;
+            margin-right: 20px;
+            margin-left: 20px;
         }
     </style>
+    <script src="../static/main.js"></script>
 </head>
 <body>
 <header>
@@ -54,9 +59,14 @@
     <a href="#" class="login-btn"><u>로그인</u></a>
 </header>
 <section class="stock-section">
-    <div class="stock-placeholder" th:each="candleImgUrl, iterator : ${candleDataList}">
-        <img th:src="${candleImgUrl}" th:alt="'주식 데이터 ' + ${iterator.index + 1}" width="100%" height="300px">
-    </div>
+    <div id="chart-container-0" class="stock-placeholder"></div>
+    <div id="chart-container-1" class="stock-placeholder"></div>
+    <div id="chart-container-2" class="stock-placeholder"></div>
+    <div id="chart-container-3" class="stock-placeholder"></div>
 </section>
+<script>
+    // 컨트롤러로부터 받은 JSON 링크들을 사용
+    let jsonLinksList = [[${jsonLinksList}]];
+</script>
 </body>
 </html>

@@ -1,5 +1,7 @@
 package com.zestbear.bitcoin.mybitcoin.service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.zestbear.bitcoin.mybitcoin.domain.CandleData;
 import lombok.RequiredArgsConstructor;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -9,43 +11,39 @@ import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 @RequiredArgsConstructor
 @Service
 public class CandleService {
 
-    public List<String> getCandleData(String[] coinSymbols) {
-        String urlTemplate = "https://api.upbit.com/v1/candles/minutes/1?market=KRW-%s&count=30";
-        List<String> results = new ArrayList<>();
+    public Map<String, List<CandleData>> getCandleData(String[] coinSymbols) {
+        String urlTemplate = "https://api.upbit.com/v1/candles/minutes/10?market=KRW-%s&count=30";
+        Map<String, List<CandleData>> resultMap = new HashMap<>();
+        ObjectMapper objectMapper = new ObjectMapper();
         CloseableHttpClient httpClient = HttpClients.createDefault();
 
         for (String coinSymbol : coinSymbols) {
             String url = String.format(urlTemplate, coinSymbol);
             String result = "";
+            HttpGet httpGet = new HttpGet(url);
 
-            try {
-                HttpGet httpGet = new HttpGet(url);
-                CloseableHttpResponse response = httpClient.execute(httpGet);
+            try (CloseableHttpResponse response = httpClient.execute(httpGet)) {
                 HttpEntity entity = response.getEntity();
                 if (entity != null) {
                     result = EntityUtils.toString(entity);
                 }
 
-                response.close();
+                CandleData[] candleData = objectMapper.readValue(result, CandleData[].class);
+                resultMap.put(coinSymbol, Arrays.asList(candleData));
+//                for (CandleData data : candleData) {
+//                    System.out.println(data.toString());
+//                }
             } catch (Exception e) {
                 e.printStackTrace();
-            } finally {
-                try {
-                    httpClient.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
             }
-            results.add(result);
         }
-        return results;
+
+        return resultMap;
     }
 }
