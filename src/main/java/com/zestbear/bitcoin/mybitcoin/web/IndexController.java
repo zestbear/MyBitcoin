@@ -1,6 +1,6 @@
 package com.zestbear.bitcoin.mybitcoin.web;
 
-import com.zestbear.bitcoin.mybitcoin.domain.CandleData;
+import com.zestbear.bitcoin.mybitcoin.domain.Candle.CandleData;
 import com.zestbear.bitcoin.mybitcoin.service.CandleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;

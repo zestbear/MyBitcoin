@@ -1,7 +1,7 @@
 package com.zestbear.bitcoin.mybitcoin.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.zestbear.bitcoin.mybitcoin.domain.CandleData;
+import com.zestbear.bitcoin.mybitcoin.domain.Candle.CandleData;
 import lombok.RequiredArgsConstructor;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;

@@ -1,7 +1,6 @@
 package com.zestbear.bitcoin.mybitcoin.service;
 
-import com.zestbear.bitcoin.mybitcoin.domain.CandleData;
-import com.zestbear.bitcoin.mybitcoin.service.CandleService;
+import com.zestbear.bitcoin.mybitcoin.domain.Candle.CandleData;
 
 import java.util.List;
 import java.util.Map;
