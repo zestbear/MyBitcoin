@@ -16,7 +16,7 @@ public class IndexController {
 
     private final CandleService candleService;
 
-    @GetMapping("/")
+    @GetMapping("/main")
     public String Index(Model model) {
         String[] coinSymbols = {"BTC", "ETH", "ETC", "ADA"};
         Map<String, List<CandleData>> jsonMap = candleService.getCandleData(coinSymbols);

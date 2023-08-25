@@ -1,4 +1,4 @@
-package com.zestbear.bitcoin.mybitcoin.config;
+package com.zestbear.bitcoin.mybitcoin.service.Account;
 
 import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;

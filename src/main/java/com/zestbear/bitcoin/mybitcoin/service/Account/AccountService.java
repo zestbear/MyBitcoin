@@ -1,15 +1,15 @@
-package com.zestbear.bitcoin.mybitcoin.service;
+package com.zestbear.bitcoin.mybitcoin.service.Account;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.zestbear.bitcoin.mybitcoin.config.DecryptionUtils;
-import com.zestbear.bitcoin.mybitcoin.config.UpbitAPIConfig;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.util.EntityUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -18,16 +18,16 @@ import java.util.UUID;
 @Service
 public class AccountService {
 
-    static UpbitAPIConfig upbitAPIConfig = new UpbitAPIConfig();
-    private static final String KEY = upbitAPIConfig.getKEY();
-    private static final String ACCESS_KEY;
-    private static final String SECRET_KEY;
     private static final String SERVER_URL = "https://api.upbit.com";
 
-    static {
+    private static String ACCESS_KEY;
+    private static String SECRET_KEY;
+
+    @Autowired
+    public AccountService(UpbitAPIConfig upbitAPIConfig) {
         try {
-            ACCESS_KEY = DecryptionUtils.decrypt(upbitAPIConfig.getACCESS_KEY(), KEY);
-            SECRET_KEY = DecryptionUtils.decrypt(upbitAPIConfig.getSECRET_KEY(), KEY);
+            ACCESS_KEY = DecryptionUtils.decrypt(upbitAPIConfig.getACCESS_KEY(), upbitAPIConfig.getKEY());
+            SECRET_KEY = DecryptionUtils.decrypt(upbitAPIConfig.getSECRET_KEY(), upbitAPIConfig.getKEY());
         } catch (Exception ex) {
             throw new RuntimeException(ex);
         }
