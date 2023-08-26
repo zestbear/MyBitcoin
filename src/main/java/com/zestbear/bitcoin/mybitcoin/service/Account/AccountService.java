@@ -2,6 +2,8 @@ package com.zestbear.bitcoin.mybitcoin.service.Account;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zestbear.bitcoin.mybitcoin.config.DecryptionUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -13,7 +15,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.util.List;
+import java.util.Map;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 public class AccountService {
@@ -33,7 +38,7 @@ public class AccountService {
         }
     }
 
-    public void getAccounts() throws IOException {
+    public Map<String, Map<String, Object>> getAccounts() throws IOException {
         Algorithm algorithm = Algorithm.HMAC256(SECRET_KEY);
         String jwtToken = JWT.create()
                 .withClaim("access_key", ACCESS_KEY)
@@ -48,13 +53,20 @@ public class AccountService {
         request.addHeader("Authorization", authenticationToken);
 
         HttpResponse response = client.execute(request);
+        HttpEntity entity = response.getEntity();
 
-        if(response.getStatusLine().getStatusCode() == 200){
-            HttpEntity entity = response.getEntity();
-            System.out.println(EntityUtils.toString(entity, "UTF-8"));
-        } else{
-            System.out.println("Error: "+ response.getStatusLine().getStatusCode());
-        }
+        String jsonStr = EntityUtils.toString(entity, "UTF-8");
 
+
+        ObjectMapper mapper = new ObjectMapper();
+        // JSON string to List of Maps
+        List<Map<String,Object>> list =
+                mapper.readValue(jsonStr, new TypeReference<List<Map<String,Object>>>(){});
+
+        // Convert to a single map where the keys are the 'currency' values
+        Map<String, Map<String,Object>> resultMap =
+                list.stream().collect(Collectors.toMap(m -> (String)m.get("currency"), m -> m));
+
+        return resultMap;
     }
 }
