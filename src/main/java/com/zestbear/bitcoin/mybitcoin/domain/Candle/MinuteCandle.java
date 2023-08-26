@@ -1,8 +1,6 @@
 package com.zestbear.bitcoin.mybitcoin.domain.Candle;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
-public class CandleData {
+public class MinuteCandle {
 
     private String market;
     private String candle_date_time_utc;
@@ -107,7 +105,7 @@ public class CandleData {
 
 //    @Override
 //    public String toString() {
-//        return "CandleData{" +
+//        return "MinuteCandle{" +
 //                "market='" + market + '\'' +
 //                ", candleDateTimeUtc='" + candleDateTimeUtc + '\'' +
 //                ", candleDateTimeKst='" + candleDateTimeKst + '\'' +

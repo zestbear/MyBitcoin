@@ -1,8 +1,7 @@
-package com.zestbear.bitcoin.mybitcoin.service;
+package com.zestbear.bitcoin.mybitcoin.service.Candle;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.zestbear.bitcoin.mybitcoin.domain.Candle.CandleData;
-import lombok.RequiredArgsConstructor;
+import com.zestbear.bitcoin.mybitcoin.domain.Candle.MinuteCandle;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -13,13 +12,13 @@ import org.springframework.stereotype.Service;
 
 import java.util.*;
 
-@RequiredArgsConstructor
 @Service
-public class CandleService {
+public class MinuteCandleService {
 
-    public Map<String, List<CandleData>> getCandleData(String[] coinSymbols) {
-        String urlTemplate = "https://api.upbit.com/v1/candles/minutes/10?market=KRW-%s&count=30";
-        Map<String, List<CandleData>> resultMap = new HashMap<>();
+    public Map<String, List<MinuteCandle>> getMinuteCandleData() {
+        String[] coinSymbols = {"BTC", "ETH", "XRP", "ADA", "DOGE", "SOL", "TRX", "DOT", "MATIC", "BCH"};
+        String urlTemplate = "https://api.upbit.com/v1/candles/minutes/10?market=KRW-%s&count=120";
+        Map<String, List<MinuteCandle>> resultMap = new HashMap<>();
         ObjectMapper objectMapper = new ObjectMapper();
         CloseableHttpClient httpClient = HttpClients.createDefault();
 
@@ -34,10 +33,10 @@ public class CandleService {
                     result = EntityUtils.toString(entity);
                 }
 
-                CandleData[] candleData = objectMapper.readValue(result, CandleData[].class);
-                resultMap.put(coinSymbol, Arrays.asList(candleData));
-//                for (CandleData data : candleData) {
-//                    System.out.println(data.toString());
+                MinuteCandle[] minuteCandleData = objectMapper.readValue(result, MinuteCandle[].class);
+                resultMap.put(coinSymbol, Arrays.asList(minuteCandleData));
+//                for (MinuteCandle data : minuteCandleData) {
+//                    System.out.println(objectMapper.writeValueAsString(data));
 //                }
             } catch (Exception e) {
                 e.printStackTrace();
