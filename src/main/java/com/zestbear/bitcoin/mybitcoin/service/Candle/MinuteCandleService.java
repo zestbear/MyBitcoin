@@ -17,7 +17,7 @@ public class MinuteCandleService {
 
     public Map<String, List<MinuteCandle>> getMinuteCandleData() {
         String[] coinSymbols = {"BTC", "ETH", "XRP", "ADA", "DOGE", "SOL", "TRX", "DOT", "MATIC", "BCH"};
-        String urlTemplate = "https://api.upbit.com/v1/candles/minutes/10?market=KRW-%s&count=120";
+        String urlTemplate = "https://api.upbit.com/v1/candles/minutes/10?market=KRW-%s&count=21";
         Map<String, List<MinuteCandle>> resultMap = new HashMap<>();
         ObjectMapper objectMapper = new ObjectMapper();
         CloseableHttpClient httpClient = HttpClients.createDefault();
