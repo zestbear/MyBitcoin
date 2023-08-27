@@ -5,7 +5,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class MinuteCandle {
+public class DayCandleData {
 
     private String market;
     private String candle_date_time_utc;
@@ -17,5 +17,8 @@ public class MinuteCandle {
     private long timestamp;
     private double candle_acc_trade_price;
     private double candle_acc_trade_volume;
-    private int unit;
+    private double prev_closing_price;
+    private double change_price;
+    private double change_rate;
+    private double converted_trade_price;
 }
