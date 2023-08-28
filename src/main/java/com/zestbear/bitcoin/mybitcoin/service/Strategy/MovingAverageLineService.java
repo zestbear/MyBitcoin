@@ -19,20 +19,26 @@ public class MovingAverageLineService {
 
         Map<String, Double> latestPrice = currentValueService.getCurrent();
         Map<String, Map<Integer, Double>> movingAverageLine = dayMovingAverageLineService.getMovingAverageLine();
+        String symbol = "KRW-" + coinSymbol;
 
-        double latest = latestPrice.get(coinSymbol);
+        if (latestPrice.containsKey(symbol)) {
+            double latest = latestPrice.get(symbol);
+            Map<Integer, Double> map = movingAverageLine.get(coinSymbol);
 
-        Map<Integer, Double> map = movingAverageLine.get(coinSymbol);
+            if (map.containsKey(5) && map.containsKey(10) && map.containsKey(21)) {
+                double value5 = map.get(5);
+                double value10 = map.get(10);
+                double value21 = map.get(21);
 
-        if (map.containsKey(5) && map.containsKey(10) && map.containsKey(21)) {
-            double value5 = map.get(5);
-            double value10 = map.get(10);
-            double value21 = map.get(21);
-
-            if (value5 > latest && value10 > latest && value21 > latest) {
-                return "bid";
-            } else if (value5 < latest && value10 < latest && value21 < latest) {
-                return "ask";
+                if (value5 < latest && value10 < latest && value21 < latest) {
+//                    System.out.println("BID: " + value5 + " " + value10 + " " + value21 + " " + latest);
+                    return "bid";
+                } else if (value5 > latest && value10 > latest && value21 > latest) {
+//                    System.out.println("ASK: " + value5 + " " + value10 + " " + value21 + " " + latest);
+                    return "ask";
+                } else {
+//                    System.out.println("DEFAULT: " + value5 + " " + value10 + " " + value21 + " " + latest);
+                }
             }
         }
 
