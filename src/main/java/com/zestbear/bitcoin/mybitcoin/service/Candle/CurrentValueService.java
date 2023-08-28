@@ -5,16 +5,22 @@ import com.zestbear.bitcoin.mybitcoin.domain.Candle.CurrentData;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 @Service
 public class CurrentValueService {
 
+    @Cacheable(value = "currentValues", key = "#root.method.name")
     public Map<String, Double> getCurrent() throws IOException {
+        Logger.getLogger(OkHttpClient.class.getName()).setLevel(Level.FINE);
+
         Map<String, Double> returnMap = new HashMap<>();
         OkHttpClient client = new OkHttpClient();
 

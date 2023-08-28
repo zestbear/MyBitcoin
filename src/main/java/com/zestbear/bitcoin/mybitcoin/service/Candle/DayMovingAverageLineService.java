@@ -2,6 +2,7 @@ package com.zestbear.bitcoin.mybitcoin.service.Candle;
 
 import com.zestbear.bitcoin.mybitcoin.domain.Candle.DayCandleData;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -14,6 +15,7 @@ public class DayMovingAverageLineService {
 
     private final DayCandleService dayCandleService;
 
+    @Cacheable(value = "movingAverages", key = "#root.method.name")
     public Map<String, Map<Integer, Double>> getMovingAverageLine() {
         CompletableFuture<Map<String, List<DayCandleData>>> future = dayCandleService.getDayCandleData();
         Map<String, List<DayCandleData>> jsonMap = null;
@@ -42,7 +44,7 @@ public class DayMovingAverageLineService {
                                 .mapToDouble(DayCandleData::getTrade_price)
                                 .sum();
 
-                        System.out.println(coinSymbol + " (" + period + "-day): " + sum / period);
+//                        System.out.println(coinSymbol + " (" + period + "-day): " + sum / period);
                         // 해당 기간의 이동평균값을 맵에 추가
                         coinMovingAverages.put(period,sum / period);
                     }

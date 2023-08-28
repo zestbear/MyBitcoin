@@ -5,13 +5,14 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zestbear.bitcoin.mybitcoin.config.DecryptionUtils;
+import jakarta.annotation.PostConstruct;
+import org.springframework.cache.annotation.Cacheable;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.util.EntityUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -28,8 +29,14 @@ public class AccountService {
     private static String ACCESS_KEY;
     private static String SECRET_KEY;
 
-    @Autowired
+    private final UpbitAPIConfig upbitAPIConfig;
+
     public AccountService(UpbitAPIConfig upbitAPIConfig) {
+        this.upbitAPIConfig = upbitAPIConfig;
+    }
+
+    @PostConstruct
+    public void init() {
         try {
             ACCESS_KEY = DecryptionUtils.decrypt(upbitAPIConfig.getACCESS_KEY(), upbitAPIConfig.getKEY());
             SECRET_KEY = DecryptionUtils.decrypt(upbitAPIConfig.getSECRET_KEY(), upbitAPIConfig.getKEY());
@@ -38,6 +45,7 @@ public class AccountService {
         }
     }
 
+    @Cacheable(value = "accounts", key = "#root.method.name")
     public Map<String, Map<String, Object>> getAccounts() throws IOException {
         Algorithm algorithm = Algorithm.HMAC256(SECRET_KEY);
         String jwtToken = JWT.create()
