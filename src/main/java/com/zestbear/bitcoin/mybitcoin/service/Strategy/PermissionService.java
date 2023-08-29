@@ -18,14 +18,17 @@ public class PermissionService {
 
         Map<String, Map<String, Object>> accounts = accountService.getAccounts();
 
-        if (movingAverageLineService.OrdSide(coinSymbol).equals("bid")) {
+        String ordSide = movingAverageLineService.OrdSide(coinSymbol);
+        if (ordSide.equals("bid")) {
             if (!accounts.containsKey(coinSymbol)) {
+                System.out.println("BID for " + coinSymbol);
                 return "bid";
             } else {
                 return "stay";
             }
-        } else if (movingAverageLineService.OrdSide(coinSymbol).equals("ask")) {
+        } else if (ordSide.equals("ask")) {
             if (accounts.containsKey(coinSymbol)) {
+                System.out.println("ASK for " + coinSymbol);
                 return "ask";
             } else {
                 return "stay";

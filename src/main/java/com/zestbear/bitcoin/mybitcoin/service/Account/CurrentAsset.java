@@ -2,7 +2,6 @@ package com.zestbear.bitcoin.mybitcoin.service.Account;
 
 import com.zestbear.bitcoin.mybitcoin.service.Candle.CurrentValueService;
 import lombok.RequiredArgsConstructor;
-import lombok.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -19,7 +18,7 @@ public class CurrentAsset {
 
     private double currentKRW;
 
-    private Map<String, Double> ValueforEach = new HashMap<>();
+    private final Map<String, Double> ValueforEach = new HashMap<>();
 
     private final AccountService accountService;
     private final CurrentValueService currentValueService;

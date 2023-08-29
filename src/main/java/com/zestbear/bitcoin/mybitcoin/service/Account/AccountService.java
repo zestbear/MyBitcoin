@@ -76,7 +76,6 @@ public class AccountService {
                 list.stream().collect(Collectors.toMap(m -> (String)m.get("currency"), m -> m));
 
 //        for (String currency : resultMap.keySet()) {
-//            System.out.println("Currency: " + currency);
 //            Map<String, Object> accountInfo = resultMap.get(currency);
 //            for (Map.Entry<String, Object> entry : accountInfo.entrySet()) {
 //                System.out.println(entry.getKey() + ": " + entry.getValue());
