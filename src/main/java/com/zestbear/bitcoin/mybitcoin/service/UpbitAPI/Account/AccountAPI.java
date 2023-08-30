@@ -13,6 +13,7 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.util.EntityUtils;
+import org.checkerframework.checker.units.qual.A;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -50,7 +51,7 @@ public class AccountAPI {
         }
     }
 
-    private Map<String, Map<String, Object>> accountData = new ConcurrentHashMap<>();   // 자산 정보
+    private final Map<String, Map<String, Object>> accountData = new ConcurrentHashMap<>();   // 자산 정보
 
     public void getAccountsAPI() throws ExecutionException, InterruptedException, ExecutionException {
 

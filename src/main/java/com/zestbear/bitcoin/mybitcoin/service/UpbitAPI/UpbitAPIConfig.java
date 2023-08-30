@@ -8,13 +8,13 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class UpbitAPIConfig {
 
-    @Value("${upbit.open.api.key}")
+    @Value("${UPBIT_ENCRYPT_KEY}")
     private String KEY;
 
-    @Value("${upbit.open.api.access.key}")
+    @Value("${UPBIT_OPEN_API_ACCESS_KEY}")
     private String ACCESS_KEY;
 
-    @Value("${upbit.open.api.secret.key}")
+    @Value("${UPBIT_OPEN_API_SECRET_KEY}")
     private String SECRET_KEY;
 
     public String getACCESS_KEY() {

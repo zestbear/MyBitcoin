@@ -55,8 +55,6 @@ public class MinuteCandleService {
 
                                 coinMovingAverages.get(period).put("before", sum2MinAgo / period);
                             }
-
-
                         }
                         movingAveragesMap.put(coinSymbol, coinMovingAverages);
 
