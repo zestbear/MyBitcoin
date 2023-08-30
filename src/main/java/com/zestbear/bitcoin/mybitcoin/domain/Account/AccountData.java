@@ -1,16 +1,8 @@
 package com.zestbear.bitcoin.mybitcoin.domain.Account;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
 
-import javax.naming.Name;
-
-@Entity
-@Table(name = "Account")
 public class AccountData {
 
-    @Id
     private String currency;                // 화폐를 의미하는 영문 대문자 코드
     private String balance;                 // 주문가능 금액/수량
     private String locked;                  // 주문 중 묶여있는 금액/수량

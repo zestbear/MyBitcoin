@@ -13,9 +13,6 @@ public class Orders {
     private String uuid;
 
     @Column
-    private String created_at;
-
-    @Column
     private String market;
 
     @Column
@@ -26,5 +23,8 @@ public class Orders {
 
     @Column
     private String price;
+
+    @Column
+    private String created_at;
 
 }

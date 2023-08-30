@@ -5,7 +5,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class MinuteCandle {
+public class MinuteCandleData {
 
     private String market;
     private String candle_date_time_utc;

@@ -1,4 +1,4 @@
-package com.zestbear.bitcoin.mybitcoin.service.Account;
+package com.zestbear.bitcoin.mybitcoin.service.UpbitAPI;
 
 import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;

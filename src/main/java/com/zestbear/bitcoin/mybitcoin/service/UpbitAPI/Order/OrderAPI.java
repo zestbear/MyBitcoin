@@ -1,13 +1,10 @@
-package com.zestbear.bitcoin.mybitcoin.service.Order;
+package com.zestbear.bitcoin.mybitcoin.service.UpbitAPI.Order;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.google.gson.Gson;
 import com.zestbear.bitcoin.mybitcoin.config.DecryptionUtils;
-import com.zestbear.bitcoin.mybitcoin.service.Account.CurrentAsset;
-import com.zestbear.bitcoin.mybitcoin.service.Account.UpbitAPIConfig;
-import com.zestbear.bitcoin.mybitcoin.service.Candle.CurrentValueService;
-import com.zestbear.bitcoin.mybitcoin.service.Strategy.PermissionService;
+import com.zestbear.bitcoin.mybitcoin.service.UpbitAPI.UpbitAPIConfig;
 import jakarta.annotation.PostConstruct;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -29,24 +26,13 @@ import java.util.Map;
 import java.util.UUID;
 
 @Service
-public class OrderService {
-
-    private final PermissionService permissionService;
-    private final CurrentAsset currentAsset;
-    private final CurrentValueService currentValueService;
+public class OrderAPI {
 
     private static String ACCESS_KEY;
     private static String SECRET_KEY;
 
     @Autowired
     private UpbitAPIConfig upbitAPIConfig;
-
-    @Autowired
-    public OrderService(PermissionService permissionService, CurrentAsset currentAsset, CurrentValueService currentValueService) {
-        this.permissionService = permissionService;
-        this.currentAsset = currentAsset;
-        this.currentValueService = currentValueService;
-    }
 
     @PostConstruct
     public void init() {
@@ -58,56 +44,21 @@ public class OrderService {
         }
     }
 
-    public void postOrder(String coinSymbol) throws NoSuchAlgorithmException, IOException {
-
-        Map<String, Double> values = currentAsset.getValueforEach();
-        double current = currentAsset.getCurrentKRWAsset();
-        Map<String, Double> currentValues = currentValueService.getCurrent();
-
-        if (currentValues == null) {
-            System.out.println("Failed to retrieve current values");
-            return; // Exit the method early
-        }
-
-
-        String action = null;
-        try {
-            action = permissionService.isSafe(coinSymbol);
-        } catch (IOException e) {
-            e.printStackTrace();
-            return; // if there's an exception, stop here.
-        }
-
-        if (action.equals("stay")) {
-            return; // Do nothing if we should stay
-        }
+    public void postOrder(String orderType, String coinSymbol, String price, String volume) throws NoSuchAlgorithmException, IOException {
 
         HashMap<String, String> params = new HashMap<>();
-        params.put("market", "KRW-" + coinSymbol);
-
-        if(action.equals("bid")){
-            if (!values.containsKey(coinSymbol)) {
-                params.put("side", "bid");
-                params.put("ord_type", "price");
-                switch (coinSymbol) {
-                    case "BTC", "ETH" -> params.put("price", String.valueOf(current * 0.4));
-                    case "ADA" -> params.put("price", String.valueOf(current * 0.1));
-                    case "DOT", "MATIC" -> params.put("price", String.valueOf(current * 0.05));
-                }
-                System.out.println("BID: " + params.get("market") + " " + params.get("price"));
-            }
-        } else if (action.equals("ask")) {
-            if (values.containsKey(coinSymbol)) {
-                double volume = values.get(coinSymbol) / currentValues.get("KRW-" + coinSymbol);
-                params.put("side", "ask");
-                params.put("volume", String.format("%.8f", volume));
-                params.put("ord_type", "market");
-                System.out.println("ASK: " + params.get("market") + " " + params.get("volume"));
-                System.out.println("In my wallet: " + values.get(coinSymbol));
-            }
+        params.put("market", coinSymbol);
+        if (orderType.equals("bid")) {
+            params.put("side", orderType);
+            params.put("ord_type", "price");
+            params.put("price", price);
+            System.out.println("BID: " + params.get("market") + " " + params.get("price"));
+        } else if (orderType.equals("ask")) {
+            params.put("side", orderType);
+            params.put("ord_type", "market");
+            params.put("volume", volume);
+            System.out.println("ASK: " + params.get("market") + " " + params.get("volume"));
         }
-
-        System.out.println("DEFAULT: " + params.get("market"));
 
         ArrayList<String> queryElements = new ArrayList<>();
         for(Map.Entry<String, String> entity : params.entrySet()) {
