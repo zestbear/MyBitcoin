@@ -1,6 +1,5 @@
 package com.zestbear.bitcoin.mybitcoin.service.Execute;
 
-import com.zestbear.bitcoin.mybitcoin.service.Strategy.DeadCross;
 import com.zestbear.bitcoin.mybitcoin.service.UpbitAPI.APIService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Scheduled;

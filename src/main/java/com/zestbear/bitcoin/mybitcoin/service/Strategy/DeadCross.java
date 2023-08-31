@@ -27,7 +27,7 @@ public class DeadCross {
         if (movingAverageLine.containsKey(coinSymbol)) {
             Map<Integer, Map<String, Double>> coinTrace = movingAverageLine.get(coinSymbol);
             if (coinTrace.get(5).get("current") < coinTrace.get(10).get("current")) {
-                return coinTrace.get(5).get("before") >= coinTrace.get(10).get("before");
+                return coinTrace.get(5).get("before") > coinTrace.get(10).get("before");
             }
         }
 

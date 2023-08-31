@@ -24,7 +24,7 @@ public class MinuteCandleAPI {
     public void getMinuteCandleAPI() throws ExecutionException, InterruptedException, ExecutionException {
 
         String[] coinSymbols = {"BTC", "ETH", "ADA", "DOT", "MATIC"};
-        String urlTemplate = "https://api.upbit.com/v1/candles/minutes/10?market=KRW-%s&count=21";
+        String urlTemplate = "https://api.upbit.com/v1/candles/minutes/60?market=KRW-%s&count=21";
         ObjectMapper objectMapper = new ObjectMapper();
         CloseableHttpClient httpClient = HttpClients.createDefault();
 
