@@ -23,7 +23,7 @@ public class CurrentValueAPI {
     public void getCurrentValueAPI() throws IOException, ExecutionException, InterruptedException, ExecutionException {
 
         OkHttpClient client = new OkHttpClient();
-        String[] coinSymbols = {"BTC", "ETH", "ADA", "DOT", "MATIC"};
+        String[] coinSymbols = {"BTC", "ETH", "SOL", "DOT", "MATIC"};
 
         List<CompletableFuture<Void>> futures = new ArrayList<>();
 
