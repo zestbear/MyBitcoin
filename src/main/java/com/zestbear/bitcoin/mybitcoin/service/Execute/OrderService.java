@@ -2,6 +2,7 @@ package com.zestbear.bitcoin.mybitcoin.service.Execute;
 
 import com.zestbear.bitcoin.mybitcoin.service.Strategy.MAComparison;
 import com.zestbear.bitcoin.mybitcoin.service.Strategy.RSICalculator;
+import com.zestbear.bitcoin.mybitcoin.service.Strategy.StopLoss;
 import com.zestbear.bitcoin.mybitcoin.service.UpbitAPI.Account.CurrentAsset;
 import com.zestbear.bitcoin.mybitcoin.service.UpbitAPI.Candle.CurrentValueAPI;
 import com.zestbear.bitcoin.mybitcoin.service.UpbitAPI.Order.OrderAPI;
@@ -20,13 +21,15 @@ public class OrderService {
     private final CurrentValueAPI currentValueAPI;
     private final MAComparison maComparison;
     private final RSICalculator rsiCalculator;
+    private final StopLoss stopLoss;
 
-    public OrderService(CurrentAsset currentAsset, OrderAPI orderAPI, CurrentValueAPI currentValueAPI, MAComparison maComparison, RSICalculator rsiCalculator) {
+    public OrderService(CurrentAsset currentAsset, OrderAPI orderAPI, CurrentValueAPI currentValueAPI, MAComparison maComparison, RSICalculator rsiCalculator, StopLoss stopLoss) {
         this.currentAsset = currentAsset;
         this.orderAPI = orderAPI;
         this.currentValueAPI = currentValueAPI;
         this.maComparison = maComparison;
         this.rsiCalculator = rsiCalculator;
+        this.stopLoss = stopLoss;
     }
 
     public void sendOrder() throws IOException, NoSuchAlgorithmException {
@@ -50,7 +53,7 @@ public class OrderService {
                 }
             }
 
-            if (maComparison.isMATiming(symbol).equals("ask") && rsiCalculator.getCalculatedRSI(symbol) > 70) {
+            if ((maComparison.isMATiming(symbol).equals("ask") && rsiCalculator.getCalculatedRSI(symbol) > 70) || stopLoss.isStop(symbol)) {
                 if (eachValues.containsKey(symbol)) {
                     double volume = eachValues.get(symbol) / currentValues.get("KRW-" + symbol);
 

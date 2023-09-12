@@ -15,6 +15,7 @@ public class CurrentAsset {
 
     private double cashKRW;                                         // 현금 보유량 (KRW)
     private final Map<String, Double> eachValue = new HashMap<>();  // 보유 중인 코인들의 평가 금액 (시장가 * 보유 수량)
+    private final Map<String, Double> buyPrices = new HashMap<>();  // 매수평균가
 
     public CurrentAsset(AccountAPI accountAPI, CurrentValueAPI currentValueAPI) {
         this.accountAPI = accountAPI;
@@ -40,6 +41,12 @@ public class CurrentAsset {
                     sum += totalValue;
                 }
             }
+            if (symbolMap.containsKey("avg_buy_price")) {
+                String avgPrice = (String) symbolMap.get("avg_buy_price");
+                if (currents.containsKey(marketSymbol)) {
+                    buyPrices.put(Symbol, Double.parseDouble(avgPrice));
+                }
+            }
         }
         String KRWCurrent = (String) accounts.get("KRW").get("balance");
         double KRWBalance = Double.parseDouble(KRWCurrent);
@@ -55,5 +62,9 @@ public class CurrentAsset {
 
     public Map<String, Double> getEachValue() {
         return eachValue;
+    }
+
+    public Map<String, Double> getBuyPrices() {
+        return buyPrices;
     }
 }
