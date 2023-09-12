@@ -30,7 +30,7 @@ public class OrderService {
     }
 
     public void sendOrder() throws IOException, NoSuchAlgorithmException {
-        String[] coinSymbols = {"BTC", "ETH", "SOL", "DOT", "MATIC"};
+        String[] coinSymbols = {"BTC", "ETH", "XRP", "XEM", "NEO", "ETC", "WAVES", "DOGE", "ARK", "SOL", "DOT", "MATIC", "XLM", "DAWN", "SAND"};
         double evalKRW = currentAsset.getAssetSum();                            // 자산 평가 금액
         Map<String, Double> eachValues = currentAsset.getEachValue();           // 보유량 * 시장가
         Map<String, Double> currentValues = currentValueAPI.getCurrentValues(); // 시장가
@@ -38,12 +38,13 @@ public class OrderService {
         for (String symbol : coinSymbols) {
             if (maComparison.isMATiming(symbol).equals("bid") && rsiCalculator.getCalculatedRSI(symbol) < 30) {
                 if (!eachValues.containsKey(symbol)) {
-                    String price = "";
-                    switch (symbol) {
-                        case "BTC", "ETH" -> price = String.valueOf(evalKRW * 0.3);
-                        case "SOL" -> price = String.valueOf(evalKRW * 0.2);
-                        case "DOT", "MATIC" -> price = String.valueOf(evalKRW * 0.05);
-                    }
+                    String price = String.valueOf(10000);
+//                    String price = "";
+//                    switch (symbol) {
+//                        case "BTC", "ETH" -> price = String.valueOf(evalKRW * 0.3);
+//                        case "SOL" -> price = String.valueOf(evalKRW * 0.2);
+//                        case "DOT", "MATIC" -> price = String.valueOf(evalKRW * 0.05);
+//                    }
 
                     orderAPI.postOrder("bid", "KRW-" + symbol, price, null);
                 }
