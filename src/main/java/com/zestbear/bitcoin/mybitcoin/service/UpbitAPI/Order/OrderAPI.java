@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -52,12 +53,12 @@ public class OrderAPI {
             params.put("side", orderType);
             params.put("ord_type", "price");
             params.put("price", price);
-            System.out.println("BID: " + params.get("market") + " " + params.get("price"));
+//            System.out.println("BID: " + params.get("market") + " " + params.get("price"));
         } else if (orderType.equals("ask")) {
             params.put("side", orderType);
             params.put("ord_type", "market");
             params.put("volume", volume);
-            System.out.println("ASK: " + params.get("market") + " " + params.get("volume"));
+//            System.out.println("ASK: " + params.get("market") + " " + params.get("volume"));
         }
 
         ArrayList<String> queryElements = new ArrayList<>();
@@ -67,26 +68,25 @@ public class OrderAPI {
 
         String queryString = String.join("&", queryElements.toArray(new String[0]));
 
-        MessageDigest md = MessageDigest.getInstance("SHA-512");
-        md.update(queryString.getBytes());
-
-        String queryHash = String.format("%0128x", new BigInteger(1, md.digest()));
-
-        Algorithm algorithmHMAC256= Algorithm.HMAC256(SECRET_KEY);
-        String jwtToken= JWT.create()
-                .withClaim("access_key", ACCESS_KEY)
-                .withClaim("nonce", UUID.randomUUID().toString())
-                .withClaim ("query_hash" , queryHash)
-                .withClaim ("query_hash_alg" , "SHA512")
-                .sign(algorithmHMAC256);
-
-        String authenticationToken= "Bearer "+jwtToken;
-
         try{
+            MessageDigest md = MessageDigest.getInstance("SHA-512");
+            md.update(queryString.getBytes());
+
+            String queryHash = String.format("%0128x", new BigInteger(1, md.digest()));
+
+            Algorithm algorithmHMAC256= Algorithm.HMAC256(SECRET_KEY);
+            String jwtToken = JWT.create()
+                    .withClaim("access_key", ACCESS_KEY)
+                    .withClaim("nonce", UUID.randomUUID().toString())
+                    .withClaim ("query_hash" , queryHash)
+                    .withClaim ("query_hash_alg" , "SHA512")
+                    .sign(algorithmHMAC256);
+
+            String authenticationToken= "Bearer "+jwtToken;
             HttpClient client= HttpClientBuilder.create().build();
             String serverUrl = "https://api.upbit.com";
             HttpPost request=new HttpPost(serverUrl +"/v1/orders");
-            request.setHeader ("Content-Type" , "application/json" );
+            request.setHeader ("Content-Type" , "application/json");
             request.addHeader ("Authorization" , authenticationToken);
             request.setEntity(new StringEntity(new Gson().toJson(params)));
 
@@ -94,8 +94,12 @@ public class OrderAPI {
             HttpEntity entity=response.getEntity();
 
             System.out.println(EntityUtils.toString(entity, "UTF-8"));
-        } catch (IOException e) {
+        } catch(NoSuchAlgorithmException | UnsupportedEncodingException e){
+            System.err.println(e.getMessage());
+            System.out.println("OrderAPI");
+        } catch(IOException e){
             e.printStackTrace();
+            System.out.println("OrderAPI");
         }
     }
 }

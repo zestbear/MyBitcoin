@@ -7,8 +7,8 @@ import com.zestbear.bitcoin.mybitcoin.service.UpbitAPI.UpbitAPIConfig;
 import jakarta.annotation.PostConstruct;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.util.EntityUtils;
 import org.json.JSONArray;
@@ -21,11 +21,13 @@ import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.*;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 @Service
 public class OrderListAPI {
 
     private static final String SERVER_URL = "https://api.upbit.com";
+    private static final String STATE = "wait";
 
     private static String ACCESS_KEY;
     private static String SECRET_KEY;
@@ -46,11 +48,11 @@ public class OrderListAPI {
         }
     }
 
-    private final ArrayList<String> uuidList = new ArrayList<>();
+    private final Queue<String> uuidQueue = new ConcurrentLinkedQueue<>();
 
-    public void getOrders() throws NoSuchAlgorithmException, UnsupportedEncodingException {
+    public synchronized void getOrders() throws NoSuchAlgorithmException, UnsupportedEncodingException {
         HashMap<String, String> params = new HashMap<>();
-        params.put("state", "wait");
+        params.put("state", STATE);
 
         ArrayList<String> queryElements = new ArrayList<>();
         for (Map.Entry<String, String> entity : params.entrySet()) {
@@ -65,6 +67,7 @@ public class OrderListAPI {
         String queryHash = String.format("%0128x", new BigInteger(1, md.digest()));
 
         Algorithm algorithm = Algorithm.HMAC256(SECRET_KEY);
+
         String jwtToken = JWT.create()
                 .withClaim("access_key", ACCESS_KEY)
                 .withClaim("nonce", UUID.randomUUID().toString())
@@ -74,14 +77,21 @@ public class OrderListAPI {
 
         String authenticationToken = "Bearer " + jwtToken;
 
-        try {
-            HttpClient client = HttpClientBuilder.create().build();
+        try (CloseableHttpClient client = HttpClientBuilder.create().build()) {
             HttpGet request = new HttpGet(SERVER_URL + "/v1/orders?" + queryString);
             request.setHeader("Content-Type", "application/json");
             request.addHeader("Authorization", authenticationToken);
 
             HttpResponse response = client.execute(request);
-            HttpEntity entity = response.getEntity();
+
+            int statusCode=response.getStatusLine().getStatusCode();
+            if(statusCode!=200){
+                // Handle error
+                System.err.println("Error occurred while getting orders: HTTP " + statusCode);
+                return;
+            }
+
+            HttpEntity entity=response.getEntity();
 
             String responseStr = EntityUtils.toString(entity, "UTF-8");
             JSONArray jsonArray = new JSONArray(responseStr);
@@ -89,17 +99,15 @@ public class OrderListAPI {
             for (int i=0; i<jsonArray.length(); i++) {
                 JSONObject orderObject = jsonArray.getJSONObject(i);
                 String uuid = orderObject.getString("uuid");
-                uuidList.add(uuid);
+                uuidQueue.add(uuid); // Add UUID to the queue
             }
-
-//            System.out.println(EntityUtils.toString(entity, "UTF-8"));
         } catch (IOException e) {
             e.printStackTrace();
+            System.out.println("OrderListAPI");
         }
     }
 
-    public ArrayList<String> getUuidList() {
-        return uuidList;
+    public Queue<String> getUuidQueue() {
+        return uuidQueue;
     }
 }
-

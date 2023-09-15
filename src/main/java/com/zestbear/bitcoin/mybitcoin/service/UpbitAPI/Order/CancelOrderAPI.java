@@ -17,10 +17,7 @@ import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 public class CancelOrderAPI {
@@ -48,11 +45,13 @@ public class CancelOrderAPI {
         }
     }
 
-    public void cancelAll() throws NoSuchAlgorithmException, UnsupportedEncodingException {
+    public void cancelAll() {
 
-        ArrayList<String> uuidList = orderListAPI.getUuidList();
+        Queue<String> uuidQueue = orderListAPI.getUuidQueue();
 
-        for (String uuid : uuidList) {
+        while (!uuidQueue.isEmpty()) {
+            String uuid = uuidQueue.poll();
+
             HashMap<String, String> params = new HashMap<>();
             params.put("uuid", uuid);
 
@@ -63,33 +62,35 @@ public class CancelOrderAPI {
 
             String queryString = String.join("&", queryElements.toArray(new String[0]));
 
-            MessageDigest md = MessageDigest.getInstance("SHA-512");
-            md.update(queryString.getBytes("UTF-8"));
-
-            String queryHash = String.format("%0128x", new BigInteger(1, md.digest()));
-
-            Algorithm algorithm = Algorithm.HMAC256(SECRET_KEY);
-            String jwtToken = JWT.create()
-                    .withClaim("access_key", ACCESS_KEY)
-                    .withClaim("nonce", UUID.randomUUID().toString())
-                    .withClaim("query_hash", queryHash)
-                    .withClaim("query_hash_alg", "SHA512")
-                    .sign(algorithm);
-
-            String authenticationToken = "Bearer " + jwtToken;
-
             try {
+                MessageDigest md = MessageDigest.getInstance("SHA-512");
+                md.update(queryString.getBytes("UTF-8"));
+
+                String queryHash = String.format("%0128x", new BigInteger(1, md.digest()));
+
+                Algorithm algorithm = Algorithm.HMAC256(SECRET_KEY);
+                String jwtToken = JWT.create()
+                        .withClaim("access_key", ACCESS_KEY)
+                        .withClaim("nonce", UUID.randomUUID().toString())
+                        .withClaim("query_hash", queryHash)
+                        .withClaim("query_hash_alg", "SHA512")
+                        .sign(algorithm);
+
+                String authenticationToken = "Bearer " + jwtToken;
+
                 HttpClient client = HttpClientBuilder.create().build();
                 HttpDelete request = new HttpDelete(SERVER_URL + "/v1/order?" + queryString);
                 request.setHeader("Content-Type", "application/json");
                 request.addHeader("Authorization", authenticationToken);
 
                 HttpResponse response = client.execute(request);
-                HttpEntity entity = response.getEntity();
 
-//                System.out.println(EntityUtils.toString(entity, "UTF-8"));
+            } catch (NoSuchAlgorithmException | UnsupportedEncodingException e) {
+                System.err.println(e.getMessage());
+                System.out.println("CancelOrderAPI");
             } catch (IOException e) {
                 e.printStackTrace();
+                System.out.println("CancelOrderAPI");
             }
         }
     }
