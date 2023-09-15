@@ -1,8 +1,9 @@
 package com.zestbear.bitcoin.mybitcoin.service.Execute;
 
+import com.zestbear.bitcoin.mybitcoin.service.Strategy.GetRatio;
 import com.zestbear.bitcoin.mybitcoin.service.Strategy.MAComparison;
 import com.zestbear.bitcoin.mybitcoin.service.Strategy.RSICalculator;
-import com.zestbear.bitcoin.mybitcoin.service.Strategy.StopLoss;
+import com.zestbear.bitcoin.mybitcoin.service.Strategy.LossRatio;
 import com.zestbear.bitcoin.mybitcoin.service.UpbitAPI.Account.CurrentAsset;
 import com.zestbear.bitcoin.mybitcoin.service.UpbitAPI.Candle.CurrentValueAPI;
 import com.zestbear.bitcoin.mybitcoin.service.UpbitAPI.Order.OrderAPI;
@@ -21,43 +22,43 @@ public class OrderService {
     private final CurrentValueAPI currentValueAPI;
     private final MAComparison maComparison;
     private final RSICalculator rsiCalculator;
-    private final StopLoss stopLoss;
+    private final LossRatio lossRatio;
+    private final GetRatio getRatio;
 
-    public OrderService(CurrentAsset currentAsset, OrderAPI orderAPI, CurrentValueAPI currentValueAPI, MAComparison maComparison, RSICalculator rsiCalculator, StopLoss stopLoss) {
+    public OrderService(CurrentAsset currentAsset, OrderAPI orderAPI, CurrentValueAPI currentValueAPI, MAComparison maComparison, RSICalculator rsiCalculator, LossRatio lossRatio, GetRatio getRatio) {
         this.currentAsset = currentAsset;
         this.orderAPI = orderAPI;
         this.currentValueAPI = currentValueAPI;
         this.maComparison = maComparison;
         this.rsiCalculator = rsiCalculator;
-        this.stopLoss = stopLoss;
+        this.lossRatio = lossRatio;
+        this.getRatio = getRatio;
     }
 
     public void sendOrder() throws IOException, NoSuchAlgorithmException {
-        String[] coinSymbols = {"BTC", "ETH", "XRP", "XEM", "NEO", "ETC", "WAVES", "DOGE", "ARK", "SOL", "DOT", "MATIC", "XLM", "DAWN", "SAND"};
-        double evalKRW = currentAsset.getAssetSum();                            // 자산 평가 금액
+        String[] coinSymbols = {"BTC", "ETH", "ETC", "SOL", "DOT", "MATIC"};
+        double cashKRW = currentAsset.getCashKRW();                             // 현금 보유량
         Map<String, Double> eachValues = currentAsset.getEachValue();           // 보유량 * 시장가
         Map<String, Double> currentValues = currentValueAPI.getCurrentValues(); // 시장가
 
         for (String symbol : coinSymbols) {
-            if (maComparison.isMATiming(symbol).equals("bid") && rsiCalculator.getCalculatedRSI(symbol) < 30) {
-                if (!eachValues.containsKey(symbol)) {
-                    String price = String.valueOf(10000);
-//                    String price = "";
-//                    switch (symbol) {
-//                        case "BTC", "ETH" -> price = String.valueOf(evalKRW * 0.3);
-//                        case "SOL" -> price = String.valueOf(evalKRW * 0.2);
-//                        case "DOT", "MATIC" -> price = String.valueOf(evalKRW * 0.05);
-//                    }
+            if (!eachValues.containsKey(symbol)) {
+                if ((maComparison.isMATiming(symbol).equals("bid") && rsiCalculator.getCalculatedRSI(symbol) < 30) || rsiCalculator.getCalculatedRSI(symbol) < 15) {
+                    String price = String.valueOf(25000);
 
                     orderAPI.postOrder("bid", "KRW-" + symbol, price, null);
                 }
-            }
-
-            if ((maComparison.isMATiming(symbol).equals("ask") && rsiCalculator.getCalculatedRSI(symbol) > 70) || stopLoss.isStop(symbol)) {
-                if (eachValues.containsKey(symbol)) {
+            } else {
+                if ((maComparison.isMATiming(symbol).equals("ask") && rsiCalculator.getCalculatedRSI(symbol) > 70) || lossRatio.isLoss(symbol) || getRatio.isGet(symbol)) {
                     double volume = eachValues.get(symbol) / currentValues.get("KRW-" + symbol);
 
                     orderAPI.postOrder("ask", "KRW-" + symbol, null, String.format("%.8f", volume));
+                }
+
+                if (eachValues.get(symbol) < 50000 && rsiCalculator.getCalculatedRSI(symbol) < 10 && cashKRW >= 25000) {
+                    String price = String.valueOf(25000);
+
+                    orderAPI.postOrder("bid", "KRW-" + symbol, price, null);
                 }
             }
         }
