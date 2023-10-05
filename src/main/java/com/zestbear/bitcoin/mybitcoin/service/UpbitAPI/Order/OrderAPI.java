@@ -96,10 +96,8 @@ public class OrderAPI {
             System.out.println(EntityUtils.toString(entity, "UTF-8"));
         } catch(NoSuchAlgorithmException | UnsupportedEncodingException e){
             System.err.println(e.getMessage());
-            System.out.println("OrderAPI");
         } catch(IOException e){
             e.printStackTrace();
-            System.out.println("OrderAPI");
         }
     }
 }

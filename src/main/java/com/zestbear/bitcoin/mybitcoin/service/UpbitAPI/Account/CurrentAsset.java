@@ -22,7 +22,7 @@ public class CurrentAsset {
         this.currentValueAPI = currentValueAPI;
     }
 
-    public double getAssetSum() throws IOException {    // 자산의 총 평가 금액
+    public double getAsset() throws IOException {    // 자산의 총 평가 금액
 
         double sum = 0;
         Map<String, Map<String, Object>> accounts = accountAPI.getAccountData();

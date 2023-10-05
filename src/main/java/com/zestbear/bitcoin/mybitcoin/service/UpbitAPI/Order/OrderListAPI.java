@@ -103,7 +103,6 @@ public class OrderListAPI {
             }
         } catch (IOException e) {
             e.printStackTrace();
-            System.out.println("OrderListAPI");
         }
     }
 

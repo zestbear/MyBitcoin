@@ -42,20 +42,28 @@ public class OrderService {
         Map<String, Double> currentValues = currentValueAPI.getCurrentValues(); // 시장가
 
         for (String symbol : coinSymbols) {
-            if (!eachValues.containsKey(symbol)) {
-                if ((maComparison.isMATiming(symbol).equals("bid") && rsiCalculator.getCalculatedRSI(symbol) < 30) || rsiCalculator.getCalculatedRSI(symbol) < 15) {
-                    String price = String.valueOf(25000);
 
-                    orderAPI.postOrder("bid", "KRW-" + symbol, price, null);
+//            System.out.println(symbol + ": " + maComparison.isMATiming(symbol));
+//            System.out.println(rsiCalculator.getCalculatedRSI(symbol));
+
+            if (!eachValues.containsKey(symbol)) {
+                if ((maComparison.isMATiming(symbol).equals("bid") && rsiCalculator.getCalculatedRSI(symbol) < 26) || rsiCalculator.getCalculatedRSI(symbol) < 15) {
+                    if (cashKRW >= 25000) {
+                        String price = String.valueOf(25000);
+
+                        orderAPI.postOrder("bid", "KRW-" + symbol, price, null);
+                    }
                 }
-            } else {
-                if ((maComparison.isMATiming(symbol).equals("ask") && rsiCalculator.getCalculatedRSI(symbol) > 70) || lossRatio.isLoss(symbol) || getRatio.isGet(symbol)) {
+            }
+
+            if (eachValues.containsKey(symbol)) {
+                if ((maComparison.isMATiming(symbol).equals("ask") && rsiCalculator.getCalculatedRSI(symbol) > 70) || lossRatio.isLoss(symbol) || getRatio.isGet(symbol) || rsiCalculator.getCalculatedRSI(symbol) > 75) {
                     double volume = eachValues.get(symbol) / currentValues.get("KRW-" + symbol);
 
                     orderAPI.postOrder("ask", "KRW-" + symbol, null, String.format("%.8f", volume));
                 }
 
-                if (eachValues.get(symbol) < 50000 && rsiCalculator.getCalculatedRSI(symbol) < 10 && cashKRW >= 25000) {
+                if (eachValues.get(symbol) < 40000 && rsiCalculator.getCalculatedRSI(symbol) < 10 && cashKRW >= 25000) {
                     String price = String.valueOf(25000);
 
                     orderAPI.postOrder("bid", "KRW-" + symbol, price, null);

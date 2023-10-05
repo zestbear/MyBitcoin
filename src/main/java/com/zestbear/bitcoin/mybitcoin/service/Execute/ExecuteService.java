@@ -3,6 +3,7 @@ package com.zestbear.bitcoin.mybitcoin.service.Execute;
 import com.zestbear.bitcoin.mybitcoin.service.Strategy.MAComparison;
 import com.zestbear.bitcoin.mybitcoin.service.Strategy.RSICalculator;
 import com.zestbear.bitcoin.mybitcoin.service.UpbitAPI.APIService;
+import com.zestbear.bitcoin.mybitcoin.service.UpbitAPI.Account.CurrentAsset;
 import com.zestbear.bitcoin.mybitcoin.service.UpbitAPI.Order.CancelOrderAPI;
 import com.zestbear.bitcoin.mybitcoin.service.UpbitAPI.Order.OrderListAPI;
 import lombok.RequiredArgsConstructor;
@@ -29,8 +30,7 @@ public class ExecuteService {
     private final CancelOrderAPI cancelOrderAPI;
     private final OrderListAPI orderListAPI;
 
-    private final RSICalculator rsiCalculator;
-    private final MAComparison maComparison;
+    private final CurrentAsset currentAsset;
 
     @Scheduled(fixedDelay = 30000)
     public void execute() throws IOException, NoSuchAlgorithmException, ExecutionException, InterruptedException {
@@ -48,6 +48,7 @@ public class ExecuteService {
         cancelOrderAPI.cancelAll(); // 미체결 주문들을 모두 취소 (오류 방지)
 
         apiService.updateAllData(); // 모든 API들의 정보를 업데이트
+        currentAsset.getAsset();
         orderService.sendOrder();   // 매매 조건에 맞으면 매매
     }
 }

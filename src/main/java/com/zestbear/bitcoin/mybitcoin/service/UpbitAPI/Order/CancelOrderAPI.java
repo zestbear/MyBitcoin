@@ -87,10 +87,8 @@ public class CancelOrderAPI {
 
             } catch (NoSuchAlgorithmException | UnsupportedEncodingException e) {
                 System.err.println(e.getMessage());
-                System.out.println("CancelOrderAPI");
             } catch (IOException e) {
                 e.printStackTrace();
-                System.out.println("CancelOrderAPI");
             }
         }
     }
