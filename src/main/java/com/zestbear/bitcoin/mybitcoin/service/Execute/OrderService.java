@@ -47,7 +47,7 @@ public class OrderService {
 //            System.out.println(rsiCalculator.getCalculatedRSI(symbol));
 
             if (!eachValues.containsKey(symbol)) {
-                if ((maComparison.isMATiming(symbol).equals("bid") && rsiCalculator.getCalculatedRSI(symbol) < 26) || rsiCalculator.getCalculatedRSI(symbol) < 15) {
+                if ((maComparison.isMATiming(symbol).equals("bid") && rsiCalculator.getCalculatedRSI(symbol) < 26) || rsiCalculator.getCalculatedRSI(symbol) < 18) {
                     if (cashKRW >= 25000) {
                         String price = String.valueOf(25000);
 

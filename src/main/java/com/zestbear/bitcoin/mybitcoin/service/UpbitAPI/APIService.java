@@ -47,6 +47,7 @@ public class APIService {
                 throw new RuntimeException(e);
             }
         });
+        future1.get();
 
         CompletableFuture<Void> future2 = CompletableFuture.runAsync(() -> {
             try {
@@ -56,6 +57,7 @@ public class APIService {
                 throw new RuntimeException(e);
             }
         });
+        future2.get();
 
         CompletableFuture<Void> future3 = CompletableFuture.runAsync(() -> {
             try {
@@ -65,8 +67,6 @@ public class APIService {
                 throw new RuntimeException(e);
             }
         });
-
-        // allOf 메소드를 사용하여 모든 Future가 완료될 때까지 대기
-        CompletableFuture.allOf(future1, future2, future3).get();
+        future3.get();
     }
 }
