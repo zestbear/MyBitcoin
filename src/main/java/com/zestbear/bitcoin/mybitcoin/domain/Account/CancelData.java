@@ -1,5 +1,8 @@
 package com.zestbear.bitcoin.mybitcoin.domain.Account;
 
+import lombok.Getter;
+
+@Getter
 public class CancelData {
 
     private String uuid;
