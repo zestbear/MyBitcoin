@@ -5,7 +5,6 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.zestbear.bitcoin.mybitcoin.config.DecryptionUtils;
 import com.zestbear.bitcoin.mybitcoin.service.UpbitAPI.UpbitAPIConfig;
 import jakarta.annotation.PostConstruct;
-import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpDelete;

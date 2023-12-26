@@ -1,7 +1,5 @@
 package com.zestbear.bitcoin.mybitcoin.service.Execute;
 
-import com.zestbear.bitcoin.mybitcoin.service.Strategy.MAComparison;
-import com.zestbear.bitcoin.mybitcoin.service.Strategy.RSICalculator;
 import com.zestbear.bitcoin.mybitcoin.service.UpbitAPI.APIService;
 import com.zestbear.bitcoin.mybitcoin.service.UpbitAPI.Account.CurrentAsset;
 import com.zestbear.bitcoin.mybitcoin.service.UpbitAPI.Order.CancelOrderAPI;
@@ -15,7 +13,6 @@ import org.springframework.stereotype.Service;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
-import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
