@@ -43,13 +43,10 @@ public class OrderService {
 
         for (String symbol : coinSymbols) {
 
-//            System.out.println(symbol + ": " + maComparison.isMATiming(symbol));
-//            System.out.println(rsiCalculator.getCalculatedRSI(symbol));
-
             if (!eachValues.containsKey(symbol)) {
-                if ((maComparison.isMATiming(symbol).equals("bid") && rsiCalculator.getCalculatedRSI(symbol) < 26) || rsiCalculator.getCalculatedRSI(symbol) < 18) {
-                    if (cashKRW >= 25000) {
-                        String price = String.valueOf(25000);
+                if ((maComparison.isMATiming(symbol).equals("bid") && rsiCalculator.getCalculatedRSI(symbol) < 25) || rsiCalculator.getCalculatedRSI(symbol) < 15) {
+                    if (cashKRW >= 30000) {
+                        String price = String.valueOf(30000);
 
                         orderAPI.postOrder("bid", "KRW-" + symbol, price, null);
                     }
@@ -57,14 +54,16 @@ public class OrderService {
             }
 
             if (eachValues.containsKey(symbol)) {
-                if ((maComparison.isMATiming(symbol).equals("ask") && rsiCalculator.getCalculatedRSI(symbol) > 70) || lossRatio.isLoss(symbol) || getRatio.isGet(symbol) || rsiCalculator.getCalculatedRSI(symbol) > 75) {
-                    double volume = eachValues.get(symbol) / currentValues.get("KRW-" + symbol);
+                if (getRatio.GetNow(symbol) >= 0.005) {
+                    if ((maComparison.isMATiming(symbol).equals("ask") && rsiCalculator.getCalculatedRSI(symbol) > 70) || lossRatio.isLoss(symbol) || getRatio.GetNow(symbol) >= 0.035 || rsiCalculator.getCalculatedRSI(symbol) > 83) {
+                        double volume = eachValues.get(symbol) / currentValues.get("KRW-" + symbol);
 
-                    orderAPI.postOrder("ask", "KRW-" + symbol, null, String.format("%.8f", volume));
+                        orderAPI.postOrder("ask", "KRW-" + symbol, null, String.format("%.8f", volume));
+                    }
                 }
 
-                if (eachValues.get(symbol) < 40000 && rsiCalculator.getCalculatedRSI(symbol) < 10 && cashKRW >= 25000) {
-                    String price = String.valueOf(25000);
+                if (eachValues.get(symbol) < 50000 && rsiCalculator.getCalculatedRSI(symbol) < 11 && cashKRW >= 30000) {
+                    String price = String.valueOf(30000);
 
                     orderAPI.postOrder("bid", "KRW-" + symbol, price, null);
                 }
