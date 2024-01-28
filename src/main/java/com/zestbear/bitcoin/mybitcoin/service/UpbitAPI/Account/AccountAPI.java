@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zestbear.bitcoin.mybitcoin.config.DecryptionUtils;
 import com.zestbear.bitcoin.mybitcoin.service.UpbitAPI.UpbitAPIConfig;
 import jakarta.annotation.PostConstruct;
+import lombok.Getter;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -34,21 +35,24 @@ public class AccountAPI {
     private static String SECRET_KEY;
 
     private final UpbitAPIConfig upbitAPIConfig;
+    private final DecryptionUtils decryptionUtils;
 
-    public AccountAPI(UpbitAPIConfig upbitAPIConfig) {
+    public AccountAPI(UpbitAPIConfig upbitAPIConfig, DecryptionUtils decryptionUtils) {
         this.upbitAPIConfig = upbitAPIConfig;
+        this.decryptionUtils = decryptionUtils;
     }
 
     @PostConstruct
     public void init() {
         try {
-            ACCESS_KEY = DecryptionUtils.decrypt(upbitAPIConfig.getACCESS_KEY(), upbitAPIConfig.getKEY());
-            SECRET_KEY = DecryptionUtils.decrypt(upbitAPIConfig.getSECRET_KEY(), upbitAPIConfig.getKEY());
+            ACCESS_KEY = decryptionUtils.decrypt(upbitAPIConfig.getACCESS_KEY(), upbitAPIConfig.getKEY());
+            SECRET_KEY = decryptionUtils.decrypt(upbitAPIConfig.getSECRET_KEY(), upbitAPIConfig.getKEY());
         } catch (Exception ex) {
             throw new RuntimeException(ex);
         }
     }
 
+    @Getter
     private final Map<String, Map<String, Object>> accountData = new ConcurrentHashMap<>();   // 자산 정보
 
     public void getAccountsAPI() throws ExecutionException, InterruptedException, ExecutionException {
@@ -96,7 +100,4 @@ public class AccountAPI {
         future.get();  // wait for the async task to complete
     }
 
-    public Map<String, Map<String, Object>> getAccountData() {
-        return accountData;
-    }
 }
