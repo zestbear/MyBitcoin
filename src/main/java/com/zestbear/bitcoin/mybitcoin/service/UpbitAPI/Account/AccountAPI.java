@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zestbear.bitcoin.mybitcoin.config.DecryptionUtils;
 import com.zestbear.bitcoin.mybitcoin.service.UpbitAPI.UpbitAPIConfig;
 import jakarta.annotation.PostConstruct;
+import lombok.Getter;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -51,6 +52,7 @@ public class AccountAPI {
         }
     }
 
+    @Getter
     private final Map<String, Map<String, Object>> accountData = new ConcurrentHashMap<>();   // 자산 정보
 
     public void getAccountsAPI() throws ExecutionException, InterruptedException, ExecutionException {
@@ -98,7 +100,4 @@ public class AccountAPI {
         future.get();  // wait for the async task to complete
     }
 
-    public Map<String, Map<String, Object>> getAccountData() {
-        return accountData;
-    }
 }
