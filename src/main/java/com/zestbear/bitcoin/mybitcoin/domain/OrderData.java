@@ -1,4 +1,4 @@
-package com.zestbear.bitcoin.mybitcoin.domain.Order;
+package com.zestbear.bitcoin.mybitcoin.domain;
 
 import lombok.Getter;
 import lombok.Setter;
