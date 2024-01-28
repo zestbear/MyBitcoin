@@ -1,12 +1,16 @@
 package com.zestbear.bitcoin.mybitcoin.domain;
 
-import lombok.Getter;
-import lombok.Setter;
+import jakarta.persistence.*;
+import lombok.NoArgsConstructor;
 
-@Getter
-@Setter
-public class OrderData {
+@Entity
+@NoArgsConstructor
+public class Order {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "order_id")
+    private int id;
     private String uuid;
     private String side;
     private String ord_type;
