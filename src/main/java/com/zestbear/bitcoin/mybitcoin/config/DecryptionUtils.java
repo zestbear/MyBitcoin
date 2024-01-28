@@ -1,6 +1,8 @@
 package com.zestbear.bitcoin.mybitcoin.config;
 
 import lombok.NoArgsConstructor;
+import org.springframework.beans.factory.annotation.Configurable;
+import org.springframework.stereotype.Component;
 
 import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
@@ -8,12 +10,13 @@ import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.util.Base64;
 
+@Component
 @NoArgsConstructor
 public class DecryptionUtils {
 
-    private static final String ALGORITHM = "AES";
+    private final String ALGORITHM = "AES";
 
-    public static String encrypt(String data, String KEY) throws Exception {
+    public String encrypt(String data, String KEY) throws Exception {
         try {
             Key key = new SecretKeySpec(KEY.getBytes(StandardCharsets.UTF_8), ALGORITHM);
             Cipher c = Cipher.getInstance(ALGORITHM);
@@ -25,7 +28,7 @@ public class DecryptionUtils {
         }
     }
 
-    public static String decrypt(String encryptedData, String KEY) throws Exception {
+    public String decrypt(String encryptedData, String KEY) throws Exception {
         try {
             Key key = new SecretKeySpec(KEY.getBytes(StandardCharsets.UTF_8), ALGORITHM);
             Cipher c = Cipher.getInstance(ALGORITHM);
