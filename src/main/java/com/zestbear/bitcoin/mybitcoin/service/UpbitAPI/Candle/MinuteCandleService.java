@@ -1,6 +1,6 @@
 package com.zestbear.bitcoin.mybitcoin.service.UpbitAPI.Candle;
 
-import com.zestbear.bitcoin.mybitcoin.domain.MinuteCandleDto;
+import com.zestbear.bitcoin.mybitcoin.dto.MinuteCandleDto;
 import org.springframework.stereotype.Service;
 
 import java.util.*;

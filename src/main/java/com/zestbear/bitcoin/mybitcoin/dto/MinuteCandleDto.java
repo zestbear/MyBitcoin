@@ -1,4 +1,4 @@
-package com.zestbear.bitcoin.mybitcoin.domain;
+package com.zestbear.bitcoin.mybitcoin.dto;
 
 import lombok.Getter;
 import lombok.Setter;
