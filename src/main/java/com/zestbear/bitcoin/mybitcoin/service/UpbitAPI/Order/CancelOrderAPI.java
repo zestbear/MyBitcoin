@@ -3,7 +3,7 @@ package com.zestbear.bitcoin.mybitcoin.service.UpbitAPI.Order;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.zestbear.bitcoin.mybitcoin.config.DecryptionUtils;
-import com.zestbear.bitcoin.mybitcoin.service.UpbitAPI.UpbitAPIConfig;
+import com.zestbear.bitcoin.mybitcoin.config.UpbitAPIConfig;
 import jakarta.annotation.PostConstruct;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
