@@ -37,19 +37,17 @@ public class ExecuteService {
         4. 매매 실행
      */
     @Scheduled(fixedDelay = 30000)
-    public synchronized void execute() throws IOException, NoSuchAlgorithmException {
+    public void execute() throws IOException, NoSuchAlgorithmException {
         
         try {
             orderListAPI.getOrders(); // 미체결 주문 확인
+            cancelOrderAPI.cancelAll(); // 미체결 주문들을 모두 취소 (오류 방지)
+            apiService.init(); // 모든 API들의 정보를 업데이트
+            currentAsset.getAsset();
+            orderService.sendOrder();   // 매매 조건에 맞으면 매매
         } catch (UnsupportedEncodingException | NoSuchAlgorithmException e) {
             log.error("Error updating order list data", e);
             throw new RuntimeException(e);
         }
-
-        cancelOrderAPI.cancelAll(); // 미체결 주문들을 모두 취소 (오류 방지)
-
-        apiService.init(); // 모든 API들의 정보를 업데이트
-        currentAsset.getAsset();
-        orderService.sendOrder();   // 매매 조건에 맞으면 매매
     }
 }
