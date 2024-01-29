@@ -1,4 +1,4 @@
-package com.zestbear.bitcoin.mybitcoin.service.UpbitAPI;
+package com.zestbear.bitcoin.mybitcoin.config;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;

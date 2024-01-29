@@ -4,7 +4,7 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.google.gson.Gson;
 import com.zestbear.bitcoin.mybitcoin.config.DecryptionUtils;
-import com.zestbear.bitcoin.mybitcoin.service.UpbitAPI.UpbitAPIConfig;
+import com.zestbear.bitcoin.mybitcoin.config.UpbitAPIConfig;
 import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpEntity;

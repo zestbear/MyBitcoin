@@ -5,7 +5,7 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zestbear.bitcoin.mybitcoin.config.DecryptionUtils;
-import com.zestbear.bitcoin.mybitcoin.service.UpbitAPI.UpbitAPIConfig;
+import com.zestbear.bitcoin.mybitcoin.config.UpbitAPIConfig;
 import jakarta.annotation.PostConstruct;
 import lombok.Getter;
 import org.apache.http.HttpEntity;
