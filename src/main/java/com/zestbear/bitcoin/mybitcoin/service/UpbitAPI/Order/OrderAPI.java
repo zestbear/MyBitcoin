@@ -6,6 +6,7 @@ import com.google.gson.Gson;
 import com.zestbear.bitcoin.mybitcoin.config.DecryptionUtils;
 import com.zestbear.bitcoin.mybitcoin.service.UpbitAPI.UpbitAPIConfig;
 import jakarta.annotation.PostConstruct;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -13,7 +14,6 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.util.EntityUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -26,20 +26,26 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
+@Slf4j
 @Service
 public class OrderAPI {
 
     private static String ACCESS_KEY;
     private static String SECRET_KEY;
 
-    @Autowired
-    private UpbitAPIConfig upbitAPIConfig;
+    private final UpbitAPIConfig upbitAPIConfig;
+    private final DecryptionUtils decryptionUtils;
+
+    public OrderAPI(UpbitAPIConfig upbitAPIConfig, DecryptionUtils decryptionUtils) {
+        this.upbitAPIConfig = upbitAPIConfig;
+        this.decryptionUtils = decryptionUtils;
+    }
 
     @PostConstruct
     public void init() {
         try {
-            ACCESS_KEY = DecryptionUtils.decrypt(upbitAPIConfig.getACCESS_KEY(), upbitAPIConfig.getKEY());
-            SECRET_KEY = DecryptionUtils.decrypt(upbitAPIConfig.getSECRET_KEY(), upbitAPIConfig.getKEY());
+            ACCESS_KEY = decryptionUtils.decrypt(upbitAPIConfig.getACCESS_KEY(), upbitAPIConfig.getKEY());
+            SECRET_KEY = decryptionUtils.decrypt(upbitAPIConfig.getSECRET_KEY(), upbitAPIConfig.getKEY());
         } catch (Exception ex) {
             throw new RuntimeException(ex);
         }
@@ -53,12 +59,12 @@ public class OrderAPI {
             params.put("side", orderType);
             params.put("ord_type", "price");
             params.put("price", price);
-//            System.out.println("BID: " + params.get("market") + " " + params.get("price"));
+            log.info("BID: " + params.get("market") + " " + params.get("price"));
         } else if (orderType.equals("ask")) {
             params.put("side", orderType);
             params.put("ord_type", "market");
             params.put("volume", volume);
-//            System.out.println("ASK: " + params.get("market") + " " + params.get("volume"));
+            log.info("ASK: " + params.get("market") + " " + params.get("volume"));
         }
 
         ArrayList<String> queryElements = new ArrayList<>();

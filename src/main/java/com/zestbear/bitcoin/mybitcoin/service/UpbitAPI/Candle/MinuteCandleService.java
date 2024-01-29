@@ -1,6 +1,6 @@
 package com.zestbear.bitcoin.mybitcoin.service.UpbitAPI.Candle;
 
-import com.zestbear.bitcoin.mybitcoin.domain.Candle.MinuteCandleData;
+import com.zestbear.bitcoin.mybitcoin.dto.MinuteCandleDto;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -17,7 +17,7 @@ public class MinuteCandleService {
 
     public CompletableFuture<Map<String, Map<Integer, Double>>> getMovingAverageLine() {
         return CompletableFuture.supplyAsync(() -> {
-            Map<String, List<MinuteCandleData>> jsonMap;
+            Map<String, List<MinuteCandleDto>> jsonMap;
             try {
                 jsonMap = minuteCandleAPI.getMinuteCandles();
             } catch (Exception e) {
@@ -31,8 +31,8 @@ public class MinuteCandleService {
 
             for (String coinSymbol : jsonMap.keySet()) {
                 try {
-                    List<MinuteCandleData> sortedMinuteCandlesData = new ArrayList<>(jsonMap.get(coinSymbol));
-                    sortedMinuteCandlesData.sort(Comparator.comparing(MinuteCandleData::getCandle_date_time_kst));
+                    List<MinuteCandleDto> sortedMinuteCandlesData = new ArrayList<>(jsonMap.get(coinSymbol));
+                    sortedMinuteCandlesData.sort(Comparator.comparing(MinuteCandleDto::getCandle_date_time_kst));
 
                     Map<Integer, Double> coinMovingAverages = new HashMap<>();
 
@@ -41,7 +41,7 @@ public class MinuteCandleService {
 
                             double sumCurrent = sortedMinuteCandlesData.subList(sortedMinuteCandlesData.size() - period,
                                             sortedMinuteCandlesData.size()).stream()
-                                    .mapToDouble(MinuteCandleData::getTrade_price)
+                                    .mapToDouble(MinuteCandleDto::getTrade_price)
                                     .sum();
 
                             coinMovingAverages.put(period, sumCurrent / period);

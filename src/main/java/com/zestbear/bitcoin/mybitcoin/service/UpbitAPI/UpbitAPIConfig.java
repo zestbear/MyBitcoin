@@ -1,9 +1,11 @@
 package com.zestbear.bitcoin.mybitcoin.service.UpbitAPI;
 
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 
+@Getter
 @NoArgsConstructor
 @Configuration
 public class UpbitAPIConfig {
@@ -17,15 +19,4 @@ public class UpbitAPIConfig {
     @Value("${UPBIT_OPEN_API_SECRET_KEY}")
     private String SECRET_KEY;
 
-    public String getACCESS_KEY() {
-        return ACCESS_KEY;
-    }
-
-    public String getSECRET_KEY() {
-        return SECRET_KEY;
-    }
-
-    public String getKEY() {
-        return KEY;
-    }
 }

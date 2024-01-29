@@ -1,6 +1,6 @@
 package com.zestbear.bitcoin.mybitcoin.service.UpbitAPI.Candle;
 
-import com.zestbear.bitcoin.mybitcoin.domain.Candle.MinuteCandleData;
+import com.zestbear.bitcoin.mybitcoin.dto.MinuteCandleDto;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
@@ -18,13 +18,13 @@ public class MinuteCandleRSI {
         this.minuteCandleAPI = minuteCandleAPI;
     }
 
-    public Map<String, List<MinuteCandleData>> getForRSI() {
+    public Map<String, List<MinuteCandleDto>> getForRSI() {
 
-        Map<String, List<MinuteCandleData>> minuteCandles = minuteCandleAPI.getMinuteCandles();
-        Map<String, List<MinuteCandleData>> forRSI = new HashMap<>();
+        Map<String, List<MinuteCandleDto>> minuteCandles = minuteCandleAPI.getMinuteCandles();
+        Map<String, List<MinuteCandleDto>> forRSI = new HashMap<>();
 
         for (String symbol : minuteCandles.keySet()) {
-            List<MinuteCandleData> sortedList =
+            List<MinuteCandleDto> sortedList =
                     minuteCandles.get(symbol).stream()
                             .sorted((o1, o2) -> o2.getCandle_date_time_kst().compareTo(o1.getCandle_date_time_kst()))
                             .collect(Collectors.toList());

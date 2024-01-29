@@ -1,7 +1,7 @@
 package com.zestbear.bitcoin.mybitcoin.service.UpbitAPI.Candle;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.zestbear.bitcoin.mybitcoin.domain.Candle.MinuteCandleData;
+import com.zestbear.bitcoin.mybitcoin.dto.MinuteCandleDto;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -19,7 +19,7 @@ import java.util.concurrent.ExecutionException;
 @Service
 public class MinuteCandleAPI {
 
-    private final Map<String, List<MinuteCandleData>> minuteCandles = new ConcurrentHashMap<>();
+    private final Map<String, List<MinuteCandleDto>> minuteCandles = new ConcurrentHashMap<>();
 
     public void getMinuteCandleAPI() throws ExecutionException, InterruptedException, ExecutionException {
 
@@ -44,8 +44,8 @@ public class MinuteCandleAPI {
                             String result;
                             try {
                                 result = EntityUtils.toString(entity);
-                                MinuteCandleData[] minuteCandleData =
-                                        objectMapper.readValue(result, MinuteCandleData[].class);
+                                MinuteCandleDto[] minuteCandleData =
+                                        objectMapper.readValue(result, MinuteCandleDto[].class);
                                 minuteCandles.put(coinSymbol, Arrays.asList(minuteCandleData));
                             } catch (IOException e) {
                                 throw new RuntimeException(e);
@@ -70,7 +70,7 @@ public class MinuteCandleAPI {
         CompletableFuture.allOf(futures.toArray(new CompletableFuture[0])).get();
     }
 
-    public Map<String, List<MinuteCandleData>> getMinuteCandles() {
+    public Map<String, List<MinuteCandleDto>> getMinuteCandles() {
         return minuteCandles;
     }
 }

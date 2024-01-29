@@ -5,6 +5,7 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.zestbear.bitcoin.mybitcoin.config.DecryptionUtils;
 import com.zestbear.bitcoin.mybitcoin.service.UpbitAPI.UpbitAPIConfig;
 import jakarta.annotation.PostConstruct;
+import lombok.Getter;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -33,21 +34,24 @@ public class OrderListAPI {
     private static String SECRET_KEY;
 
     private final UpbitAPIConfig upbitAPIConfig;
+    private final DecryptionUtils decryptionUtils;
 
-    public OrderListAPI(UpbitAPIConfig upbitAPIConfig) {
+    public OrderListAPI(UpbitAPIConfig upbitAPIConfig, DecryptionUtils decryptionUtils) {
         this.upbitAPIConfig = upbitAPIConfig;
+        this.decryptionUtils = decryptionUtils;
     }
 
     @PostConstruct
     public void init() {
         try {
-            ACCESS_KEY = DecryptionUtils.decrypt(upbitAPIConfig.getACCESS_KEY(), upbitAPIConfig.getKEY());
-            SECRET_KEY = DecryptionUtils.decrypt(upbitAPIConfig.getSECRET_KEY(), upbitAPIConfig.getKEY());
+            ACCESS_KEY = decryptionUtils.decrypt(upbitAPIConfig.getACCESS_KEY(), upbitAPIConfig.getKEY());
+            SECRET_KEY = decryptionUtils.decrypt(upbitAPIConfig.getSECRET_KEY(), upbitAPIConfig.getKEY());
         } catch (Exception ex) {
             throw new RuntimeException(ex);
         }
     }
 
+    @Getter
     private final Queue<String> uuidQueue = new ConcurrentLinkedQueue<>();
 
     public synchronized void getOrders() throws NoSuchAlgorithmException, UnsupportedEncodingException {
@@ -106,7 +110,4 @@ public class OrderListAPI {
         }
     }
 
-    public Queue<String> getUuidQueue() {
-        return uuidQueue;
-    }
 }

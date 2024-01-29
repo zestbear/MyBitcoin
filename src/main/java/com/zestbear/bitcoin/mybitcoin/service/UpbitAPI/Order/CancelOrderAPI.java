@@ -28,17 +28,19 @@ public class CancelOrderAPI {
 
     private final UpbitAPIConfig upbitAPIConfig;
     private final OrderListAPI orderListAPI;
+    private final DecryptionUtils decryptionUtils;
 
-    public CancelOrderAPI(UpbitAPIConfig upbitAPIConfig, OrderListAPI orderListAPI) {
+    public CancelOrderAPI(UpbitAPIConfig upbitAPIConfig, OrderListAPI orderListAPI, DecryptionUtils decryptionUtils) {
         this.upbitAPIConfig = upbitAPIConfig;
         this.orderListAPI = orderListAPI;
+        this.decryptionUtils = decryptionUtils;
     }
 
     @PostConstruct
     public void init() {
         try {
-            ACCESS_KEY = DecryptionUtils.decrypt(upbitAPIConfig.getACCESS_KEY(), upbitAPIConfig.getKEY());
-            SECRET_KEY = DecryptionUtils.decrypt(upbitAPIConfig.getSECRET_KEY(), upbitAPIConfig.getKEY());
+            ACCESS_KEY = decryptionUtils.decrypt(upbitAPIConfig.getACCESS_KEY(), upbitAPIConfig.getKEY());
+            SECRET_KEY = decryptionUtils.decrypt(upbitAPIConfig.getSECRET_KEY(), upbitAPIConfig.getKEY());
         } catch (Exception ex) {
             throw new RuntimeException(ex);
         }

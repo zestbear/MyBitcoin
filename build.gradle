@@ -15,9 +15,6 @@ configurations {
 	compileOnly {
 		extendsFrom annotationProcessor
 	}
-	all {
-		exclude group: 'commons-logging', module: 'commons-logging'
-	}
 }
 
 repositories {
@@ -37,6 +34,7 @@ dependencies {
 	implementation 'com.squareup.okhttp3:okhttp:4.9.1'
 	implementation 'com.github.ben-manes.caffeine:caffeine'
 	implementation 'org.apache.commons:commons-collections4:4.4'
+	runtimeOnly 'com.mysql:mysql-connector-j'
 }
 
 
