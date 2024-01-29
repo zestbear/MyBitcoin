@@ -1,7 +1,7 @@
 package com.zestbear.bitcoin.mybitcoin.service.UpbitAPI.Candle;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.zestbear.bitcoin.mybitcoin.domain.Candle.CurrentData;
+import com.zestbear.bitcoin.mybitcoin.domain.MinuteCandleData.CurrentData;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;

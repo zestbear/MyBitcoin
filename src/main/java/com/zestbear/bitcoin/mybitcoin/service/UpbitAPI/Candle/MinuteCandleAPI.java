@@ -1,7 +1,7 @@
 package com.zestbear.bitcoin.mybitcoin.service.UpbitAPI.Candle;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.zestbear.bitcoin.mybitcoin.domain.Candle.MinuteCandleData;
+import com.zestbear.bitcoin.mybitcoin.domain.MinuteCandleData;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
