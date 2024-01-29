@@ -3,9 +3,7 @@ package com.zestbear.bitcoin.mybitcoin.service.UpbitAPI.Order;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.google.gson.Gson;
-import com.zestbear.bitcoin.mybitcoin.config.DecryptionUtils;
 import com.zestbear.bitcoin.mybitcoin.config.UpbitAPIConfig;
-import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -30,28 +28,16 @@ import java.util.UUID;
 @Service
 public class OrderAPI {
 
-    private static String ACCESS_KEY;
-    private static String SECRET_KEY;
-
     private final UpbitAPIConfig upbitAPIConfig;
-    private final DecryptionUtils decryptionUtils;
 
-    public OrderAPI(UpbitAPIConfig upbitAPIConfig, DecryptionUtils decryptionUtils) {
+    public OrderAPI(UpbitAPIConfig upbitAPIConfig) {
         this.upbitAPIConfig = upbitAPIConfig;
-        this.decryptionUtils = decryptionUtils;
     }
 
-    @PostConstruct
-    public void init() {
-        try {
-            ACCESS_KEY = decryptionUtils.decrypt(upbitAPIConfig.getACCESS_KEY(), upbitAPIConfig.getKEY());
-            SECRET_KEY = decryptionUtils.decrypt(upbitAPIConfig.getSECRET_KEY(), upbitAPIConfig.getKEY());
-        } catch (Exception ex) {
-            throw new RuntimeException(ex);
-        }
-    }
+    public void postOrder(String orderType, String coinSymbol, String price, String volume) {
 
-    public void postOrder(String orderType, String coinSymbol, String price, String volume) throws NoSuchAlgorithmException, IOException {
+        String ACCESS_KEY = upbitAPIConfig.getACCESS_KEY();
+        String SECRET_KEY = upbitAPIConfig.getSECRET_KEY();
 
         HashMap<String, String> params = new HashMap<>();
         params.put("market", coinSymbol);

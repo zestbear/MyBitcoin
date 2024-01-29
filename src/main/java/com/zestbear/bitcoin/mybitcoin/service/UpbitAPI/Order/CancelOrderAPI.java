@@ -2,9 +2,7 @@ package com.zestbear.bitcoin.mybitcoin.service.UpbitAPI.Order;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
-import com.zestbear.bitcoin.mybitcoin.config.DecryptionUtils;
 import com.zestbear.bitcoin.mybitcoin.config.UpbitAPIConfig;
-import jakarta.annotation.PostConstruct;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpDelete;
@@ -23,30 +21,18 @@ public class CancelOrderAPI {
 
     private static final String SERVER_URL = "https://api.upbit.com";
 
-    private static String ACCESS_KEY;
-    private static String SECRET_KEY;
-
     private final UpbitAPIConfig upbitAPIConfig;
     private final OrderListAPI orderListAPI;
-    private final DecryptionUtils decryptionUtils;
 
-    public CancelOrderAPI(UpbitAPIConfig upbitAPIConfig, OrderListAPI orderListAPI, DecryptionUtils decryptionUtils) {
+    public CancelOrderAPI(UpbitAPIConfig upbitAPIConfig, OrderListAPI orderListAPI) {
         this.upbitAPIConfig = upbitAPIConfig;
         this.orderListAPI = orderListAPI;
-        this.decryptionUtils = decryptionUtils;
-    }
-
-    @PostConstruct
-    public void init() {
-        try {
-            ACCESS_KEY = decryptionUtils.decrypt(upbitAPIConfig.getACCESS_KEY(), upbitAPIConfig.getKEY());
-            SECRET_KEY = decryptionUtils.decrypt(upbitAPIConfig.getSECRET_KEY(), upbitAPIConfig.getKEY());
-        } catch (Exception ex) {
-            throw new RuntimeException(ex);
-        }
     }
 
     public void cancelAll() {
+
+        String ACCESS_KEY = upbitAPIConfig.getACCESS_KEY();
+        String SECRET_KEY = upbitAPIConfig.getSECRET_KEY();
 
         Queue<String> uuidQueue = orderListAPI.getUuidQueue();
 

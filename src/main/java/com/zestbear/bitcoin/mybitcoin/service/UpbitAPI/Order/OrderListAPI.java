@@ -30,31 +30,20 @@ public class OrderListAPI {
     private static final String SERVER_URL = "https://api.upbit.com";
     private static final String STATE = "wait";
 
-    private static String ACCESS_KEY;
-    private static String SECRET_KEY;
-
     private final UpbitAPIConfig upbitAPIConfig;
-    private final DecryptionUtils decryptionUtils;
 
-    public OrderListAPI(UpbitAPIConfig upbitAPIConfig, DecryptionUtils decryptionUtils) {
+    public OrderListAPI(UpbitAPIConfig upbitAPIConfig) {
         this.upbitAPIConfig = upbitAPIConfig;
-        this.decryptionUtils = decryptionUtils;
-    }
-
-    @PostConstruct
-    public void init() {
-        try {
-            ACCESS_KEY = decryptionUtils.decrypt(upbitAPIConfig.getACCESS_KEY(), upbitAPIConfig.getKEY());
-            SECRET_KEY = decryptionUtils.decrypt(upbitAPIConfig.getSECRET_KEY(), upbitAPIConfig.getKEY());
-        } catch (Exception ex) {
-            throw new RuntimeException(ex);
-        }
     }
 
     @Getter
     private final Queue<String> uuidQueue = new ConcurrentLinkedQueue<>();
 
     public synchronized void getOrders() throws NoSuchAlgorithmException, UnsupportedEncodingException {
+
+        String ACCESS_KEY = upbitAPIConfig.getACCESS_KEY();
+        String SECRET_KEY = upbitAPIConfig.getSECRET_KEY();
+
         HashMap<String, String> params = new HashMap<>();
         params.put("state", STATE);
 

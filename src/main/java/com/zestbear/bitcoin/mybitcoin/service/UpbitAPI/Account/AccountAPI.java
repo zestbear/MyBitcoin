@@ -4,9 +4,7 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.zestbear.bitcoin.mybitcoin.config.DecryptionUtils;
 import com.zestbear.bitcoin.mybitcoin.config.UpbitAPIConfig;
-import jakarta.annotation.PostConstruct;
 import lombok.Getter;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -31,31 +29,19 @@ public class AccountAPI {
 
     private static final String SERVER_URL = "https://api.upbit.com";
 
-    private static String ACCESS_KEY;
-    private static String SECRET_KEY;
-
     private final UpbitAPIConfig upbitAPIConfig;
-    private final DecryptionUtils decryptionUtils;
-
-    public AccountAPI(UpbitAPIConfig upbitAPIConfig, DecryptionUtils decryptionUtils) {
-        this.upbitAPIConfig = upbitAPIConfig;
-        this.decryptionUtils = decryptionUtils;
-    }
-
-    @PostConstruct
-    public void init() {
-        try {
-            ACCESS_KEY = decryptionUtils.decrypt(upbitAPIConfig.getACCESS_KEY(), upbitAPIConfig.getKEY());
-            SECRET_KEY = decryptionUtils.decrypt(upbitAPIConfig.getSECRET_KEY(), upbitAPIConfig.getKEY());
-        } catch (Exception ex) {
-            throw new RuntimeException(ex);
-        }
-    }
 
     @Getter
     private final Map<String, Map<String, Object>> accountData = new ConcurrentHashMap<>();   // 자산 정보
 
-    public void getAccountsAPI() throws ExecutionException, InterruptedException, ExecutionException {
+    public AccountAPI(UpbitAPIConfig upbitAPIConfig) {
+        this.upbitAPIConfig = upbitAPIConfig;
+    }
+
+    public void getAccountsAPI() throws InterruptedException, ExecutionException {
+
+        String ACCESS_KEY = upbitAPIConfig.getACCESS_KEY();
+        String SECRET_KEY = upbitAPIConfig.getSECRET_KEY();
 
         Algorithm algorithm = Algorithm.HMAC256(SECRET_KEY);
         String jwtToken = JWT.create()
