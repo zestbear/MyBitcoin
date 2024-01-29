@@ -2,8 +2,11 @@ package com.zestbear.bitcoin.mybitcoin.service.UpbitAPI.Order;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.zestbear.bitcoin.mybitcoin.config.UpbitAPIConfig;
+import com.zestbear.bitcoin.mybitcoin.domain.Order;
+import com.zestbear.bitcoin.mybitcoin.domain.OrderRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -29,9 +32,11 @@ import java.util.UUID;
 public class OrderAPI {
 
     private final UpbitAPIConfig upbitAPIConfig;
+    private final OrderRepository orderRepository;
 
-    public OrderAPI(UpbitAPIConfig upbitAPIConfig) {
+    public OrderAPI(UpbitAPIConfig upbitAPIConfig, OrderRepository orderRepository) {
         this.upbitAPIConfig = upbitAPIConfig;
+        this.orderRepository = orderRepository;
     }
 
     public void postOrder(String orderType, String coinSymbol, String price, String volume) {
@@ -84,6 +89,11 @@ public class OrderAPI {
 
             HttpResponse response=client.execute(request);
             HttpEntity entity=response.getEntity();
+
+            String responseJson = EntityUtils.toString(entity, "UTF-8");
+            ObjectMapper objectMapper = new ObjectMapper();
+            Order newOrder = objectMapper.readValue(responseJson, Order.class);
+            orderRepository.save(newOrder);
 
             System.out.println(EntityUtils.toString(entity, "UTF-8"));
         } catch(NoSuchAlgorithmException | UnsupportedEncodingException e){
