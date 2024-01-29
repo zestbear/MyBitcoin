@@ -1,7 +1,7 @@
 package com.zestbear.bitcoin.mybitcoin.service.UpbitAPI.Candle;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.zestbear.bitcoin.mybitcoin.domain.MinuteCandleData.CurrentData;
+import com.zestbear.bitcoin.mybitcoin.domain.CurrentDataDto;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -42,9 +42,9 @@ public class CurrentValueAPI {
                         String responseBody = response.body().string();
 
                         ObjectMapper mapper = new ObjectMapper();
-                        CurrentData[] currentDatas = mapper.readValue(responseBody, CurrentData[].class);
+                        CurrentDataDto[] currentDatas = mapper.readValue(responseBody, CurrentDataDto[].class);
 
-                        for (CurrentData currentData : currentDatas) {
+                        for (CurrentDataDto currentData : currentDatas) {
                             CurrentValues.put(currentData.getMarket(), currentData.getTrade_price());
                         }
                     } else {
