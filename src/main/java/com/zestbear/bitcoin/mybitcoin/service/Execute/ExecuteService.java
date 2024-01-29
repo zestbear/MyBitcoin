@@ -4,7 +4,6 @@ import com.zestbear.bitcoin.mybitcoin.service.UpbitAPI.APIService;
 import com.zestbear.bitcoin.mybitcoin.service.UpbitAPI.Account.CurrentAsset;
 import com.zestbear.bitcoin.mybitcoin.service.UpbitAPI.Order.CancelOrderAPI;
 import com.zestbear.bitcoin.mybitcoin.service.UpbitAPI.Order.OrderListAPI;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -12,8 +11,6 @@ import org.springframework.stereotype.Service;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
 
 @Slf4j
 @Service
