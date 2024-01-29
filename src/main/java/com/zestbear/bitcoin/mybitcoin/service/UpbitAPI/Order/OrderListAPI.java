@@ -5,6 +5,7 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.zestbear.bitcoin.mybitcoin.config.DecryptionUtils;
 import com.zestbear.bitcoin.mybitcoin.service.UpbitAPI.UpbitAPIConfig;
 import jakarta.annotation.PostConstruct;
+import lombok.Getter;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -50,6 +51,7 @@ public class OrderListAPI {
         }
     }
 
+    @Getter
     private final Queue<String> uuidQueue = new ConcurrentLinkedQueue<>();
 
     public synchronized void getOrders() throws NoSuchAlgorithmException, UnsupportedEncodingException {
@@ -108,7 +110,4 @@ public class OrderListAPI {
         }
     }
 
-    public Queue<String> getUuidQueue() {
-        return uuidQueue;
-    }
 }
