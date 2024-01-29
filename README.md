@@ -38,3 +38,9 @@ Please submit a pull request, adding anything else you think you need in the pro
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details
+
+## <img src="https://github.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/blob/master/Emojis/Symbols/Warning.png" width="25" height="25" /> Warning
+
+If you do use it, I recommend that you do so in small amounts, and I am not responsible for any losses resulting from its use.
+
+사용하더라도 소액으로 하시는 것을 추천드리며, 사용으로 인한 손실은 책임지지 않습니다.
