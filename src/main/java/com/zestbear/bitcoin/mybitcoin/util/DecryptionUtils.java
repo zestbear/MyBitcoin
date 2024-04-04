@@ -1,7 +1,6 @@
-package com.zestbear.bitcoin.mybitcoin.config;
+package com.zestbear.bitcoin.mybitcoin.util;
 
 import lombok.NoArgsConstructor;
-import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.Cipher;

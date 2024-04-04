@@ -35,7 +35,7 @@ public class OrderService {
         this.getRatio = getRatio;
     }
 
-    public void sendOrder() throws IOException, NoSuchAlgorithmException {
+    public void sendOrder() throws Exception {
         String[] coinSymbols = {"BTC", "ETH", "ETC", "SOL", "DOT", "MATIC"};
         double cashKRW = currentAsset.getCashKRW();                             // 현금 보유량
         Map<String, Double> eachValues = currentAsset.getEachValue();           // 보유량 * 시장가

@@ -3,9 +3,9 @@ package com.zestbear.bitcoin.mybitcoin.service.UpbitAPI.Order;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.google.gson.Gson;
-import com.zestbear.bitcoin.mybitcoin.config.DecryptionUtils;
+import com.zestbear.bitcoin.mybitcoin.util.DecryptionUtils;
 import com.zestbear.bitcoin.mybitcoin.service.UpbitAPI.UpbitAPIConfig;
-import jakarta.annotation.PostConstruct;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -13,7 +13,6 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.util.EntityUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -26,26 +25,22 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
+@Slf4j
 @Service
 public class OrderAPI {
 
-    private static String ACCESS_KEY;
-    private static String SECRET_KEY;
+    private final UpbitAPIConfig upbitAPIConfig;
+    private final DecryptionUtils utils;
 
-    @Autowired
-    private UpbitAPIConfig upbitAPIConfig;
-
-    @PostConstruct
-    public void init() {
-        try {
-            ACCESS_KEY = DecryptionUtils.decrypt(upbitAPIConfig.getACCESS_KEY(), upbitAPIConfig.getKEY());
-            SECRET_KEY = DecryptionUtils.decrypt(upbitAPIConfig.getSECRET_KEY(), upbitAPIConfig.getKEY());
-        } catch (Exception ex) {
-            throw new RuntimeException(ex);
-        }
+    public OrderAPI(UpbitAPIConfig upbitAPIConfig, DecryptionUtils utils) {
+        this.upbitAPIConfig = upbitAPIConfig;
+        this.utils = utils;
     }
 
-    public void postOrder(String orderType, String coinSymbol, String price, String volume) throws NoSuchAlgorithmException, IOException {
+    public void postOrder(String orderType, String coinSymbol, String price, String volume) throws Exception {
+
+        String ACCESS_KEY = utils.decrypt(upbitAPIConfig.getACCESS_KEY(), upbitAPIConfig.getKEY());
+        String SECRET_KEY = utils.decrypt(upbitAPIConfig.getSECRET_KEY(), upbitAPIConfig.getKEY());
 
         HashMap<String, String> params = new HashMap<>();
         params.put("market", coinSymbol);
@@ -97,7 +92,7 @@ public class OrderAPI {
         } catch(NoSuchAlgorithmException | UnsupportedEncodingException e){
             System.err.println(e.getMessage());
         } catch(IOException e){
-            e.printStackTrace();
+            log.error("주문 요청에 실패했습니다.", e);
         }
     }
 }

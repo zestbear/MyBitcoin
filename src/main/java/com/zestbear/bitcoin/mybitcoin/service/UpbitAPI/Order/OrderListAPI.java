@@ -2,9 +2,10 @@ package com.zestbear.bitcoin.mybitcoin.service.UpbitAPI.Order;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
-import com.zestbear.bitcoin.mybitcoin.config.DecryptionUtils;
+import com.zestbear.bitcoin.mybitcoin.util.DecryptionUtils;
 import com.zestbear.bitcoin.mybitcoin.service.UpbitAPI.UpbitAPIConfig;
-import jakarta.annotation.PostConstruct;
+import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -16,41 +17,34 @@ import org.json.JSONObject;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
 import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.util.*;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
+@Slf4j
 @Service
 public class OrderListAPI {
 
     private static final String SERVER_URL = "https://api.upbit.com";
     private static final String STATE = "wait";
 
-    private static String ACCESS_KEY;
-    private static String SECRET_KEY;
-
     private final UpbitAPIConfig upbitAPIConfig;
+    private final DecryptionUtils utils;
 
-    public OrderListAPI(UpbitAPIConfig upbitAPIConfig) {
+    public OrderListAPI(UpbitAPIConfig upbitAPIConfig, DecryptionUtils utils) {
         this.upbitAPIConfig = upbitAPIConfig;
+        this.utils = utils;
     }
 
-    @PostConstruct
-    public void init() {
-        try {
-            ACCESS_KEY = DecryptionUtils.decrypt(upbitAPIConfig.getACCESS_KEY(), upbitAPIConfig.getKEY());
-            SECRET_KEY = DecryptionUtils.decrypt(upbitAPIConfig.getSECRET_KEY(), upbitAPIConfig.getKEY());
-        } catch (Exception ex) {
-            throw new RuntimeException(ex);
-        }
-    }
-
+    @Getter
     private final Queue<String> uuidQueue = new ConcurrentLinkedQueue<>();
 
-    public synchronized void getOrders() throws NoSuchAlgorithmException, UnsupportedEncodingException {
+    public synchronized void getOrders() throws Exception {
+
+        String ACCESS_KEY = utils.decrypt(upbitAPIConfig.getACCESS_KEY(), upbitAPIConfig.getKEY());
+        String SECRET_KEY = utils.decrypt(upbitAPIConfig.getSECRET_KEY(), upbitAPIConfig.getKEY());
+
         HashMap<String, String> params = new HashMap<>();
         params.put("state", STATE);
 
@@ -102,11 +96,8 @@ public class OrderListAPI {
                 uuidQueue.add(uuid); // Add UUID to the queue
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error("주문 목록 요청에 실패했습니다.", e);
         }
     }
 
-    public Queue<String> getUuidQueue() {
-        return uuidQueue;
-    }
 }

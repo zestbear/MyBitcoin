@@ -2,9 +2,9 @@ package com.zestbear.bitcoin.mybitcoin.service.UpbitAPI.Order;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
-import com.zestbear.bitcoin.mybitcoin.config.DecryptionUtils;
+import com.zestbear.bitcoin.mybitcoin.util.DecryptionUtils;
 import com.zestbear.bitcoin.mybitcoin.service.UpbitAPI.UpbitAPIConfig;
-import jakarta.annotation.PostConstruct;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpDelete;
@@ -18,33 +18,26 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.*;
 
+@Slf4j
 @Service
 public class CancelOrderAPI {
 
     private static final String SERVER_URL = "https://api.upbit.com";
 
-    private static String ACCESS_KEY;
-    private static String SECRET_KEY;
-
     private final UpbitAPIConfig upbitAPIConfig;
     private final OrderListAPI orderListAPI;
+    private final DecryptionUtils utils;
 
-    public CancelOrderAPI(UpbitAPIConfig upbitAPIConfig, OrderListAPI orderListAPI) {
+    public CancelOrderAPI(UpbitAPIConfig upbitAPIConfig, OrderListAPI orderListAPI, DecryptionUtils utils) {
         this.upbitAPIConfig = upbitAPIConfig;
         this.orderListAPI = orderListAPI;
+        this.utils = utils;
     }
 
-    @PostConstruct
-    public void init() {
-        try {
-            ACCESS_KEY = DecryptionUtils.decrypt(upbitAPIConfig.getACCESS_KEY(), upbitAPIConfig.getKEY());
-            SECRET_KEY = DecryptionUtils.decrypt(upbitAPIConfig.getSECRET_KEY(), upbitAPIConfig.getKEY());
-        } catch (Exception ex) {
-            throw new RuntimeException(ex);
-        }
-    }
+    public void cancelAll() throws Exception {
 
-    public void cancelAll() {
+        String ACCESS_KEY = utils.decrypt(upbitAPIConfig.getACCESS_KEY(), upbitAPIConfig.getKEY());
+        String SECRET_KEY = utils.decrypt(upbitAPIConfig.getSECRET_KEY(), upbitAPIConfig.getKEY());
 
         Queue<String> uuidQueue = orderListAPI.getUuidQueue();
 
@@ -87,7 +80,7 @@ public class CancelOrderAPI {
             } catch (NoSuchAlgorithmException | UnsupportedEncodingException e) {
                 System.err.println(e.getMessage());
             } catch (IOException e) {
-                e.printStackTrace();
+                log.error("주문 취소에 실패했습니다.", e);
             }
         }
     }
