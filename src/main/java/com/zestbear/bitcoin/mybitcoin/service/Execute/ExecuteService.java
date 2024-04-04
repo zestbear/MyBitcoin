@@ -10,11 +10,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
 
 @RequiredArgsConstructor
 @Service
@@ -30,13 +28,15 @@ public class ExecuteService {
     private final CurrentAsset currentAsset;
 
     @Scheduled(fixedDelay = 30000)
-    public void execute() throws IOException, NoSuchAlgorithmException, ExecutionException, InterruptedException {
+    public void execute() throws Exception {
 
         CompletableFuture<Void> future = CompletableFuture.runAsync(() -> {
             try {
                 orderListAPI.getOrders();
             } catch (UnsupportedEncodingException | NoSuchAlgorithmException e) {
                 logger.error("Error updating order list data", e);
+                throw new RuntimeException(e);
+            } catch (Exception e) {
                 throw new RuntimeException(e);
             }
         });
